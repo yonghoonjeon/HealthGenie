@@ -1,4 +1,11 @@
 <div class="container my-3">
+            {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-danger">
+              <strong>{{ message }}</strong>
+            </div>
+          {% endfor %}
+    {% endif %}
     <form action="{% url 'login' %} "method='post'>
         {% csrf_token %}
         <div class="mb-3">

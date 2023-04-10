@@ -1,8 +1,3 @@
-# from django.contrib import admin
-# from .models import User
-# # Register your models here.
-#
-# admin.site.register(User)
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
@@ -19,12 +14,12 @@ class MyUserChangeForm(UserChangeForm):
 class MyUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('email','username')
+        fields = ('email','user_name')
 
 
 class MyUserAdmin(UserAdmin):
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'username')}),
+        (None, {'fields': ('email', 'password', 'user_name')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
@@ -37,9 +32,9 @@ class MyUserAdmin(UserAdmin):
     )
     form = MyUserChangeForm
     add_form = MyUserCreationForm
-    list_display = ('email', 'username', 'is_staff')
+    list_display = ('email', 'user_name', 'is_staff')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
-    search_fields = ('email', 'username')
+    search_fields = ('email', 'user_name')
     ordering = ('email',)
 
 

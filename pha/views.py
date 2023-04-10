@@ -1,8 +1,3 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-import json, bcrypt, jwt, re
-
-
 from django.http import JsonResponse, HttpResponse
 from .forms import UserRegisterForm
 from django.contrib import messages
@@ -38,13 +33,11 @@ def login_view(request):
     사용자 로그인 템플릿 view
     """
     if request.method == 'POST':
-        user = authenticate(email=request.POST['email'], password=request.POST['password'])
-        print(request.POST['email'])
-        print(request.POST['password'])
-        print(user)
+        user = authenticate(username=request.POST['email'], password=request.POST['password'])
         if user:
-            redirect(reverse("pha:main"))
+            login(request, user)
+            return redirect(reverse("main"))
         messages.error(request, "등록되지 않은 사용자입니다.\n정보를 다시 확인해주세요")
-        return render(request, 'pha/login.html')
+        return HttpResponse("오류")
 
     return render(request, 'pha/login.html')

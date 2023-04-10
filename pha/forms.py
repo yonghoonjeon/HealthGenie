@@ -8,4 +8,12 @@ class UserRegisterForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'sex', 'age', 'height', 'weight']
+        fields = ['user_name', 'email', 'password', 'sex', 'age', 'height', 'weight']
+
+    def save(self, commit=True):
+        # Save the provided password in hashed format
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
