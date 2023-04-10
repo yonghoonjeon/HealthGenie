@@ -1,0 +1,14 @@
+<div class="container my-3">
+    <form action="{% url 'login' %} "method='post'>
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="email">사용자 email</label>
+            <input type="text" name="email" id="email">
+        </div>
+        <div class="mb-3">
+            <label for="password">비밀번호</label>
+            <input type="password" name="password" id="password">
+        </div>
+        <button type="submit" class="btn btn-primary">로그인</button>
+    </form>
+</div>
