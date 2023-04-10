@@ -65,7 +65,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Project(models.Model):
     project_id = models.AutoField(primary_key=True)
-    email = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_achieved = models.BooleanField()
     p_name = models.CharField(max_length=100)
     goal_weight = models.PositiveIntegerField()
@@ -86,6 +86,6 @@ class Food(models.Model):
 class Meal(models.Model):
     meals_id = models.AutoField(primary_key=True)
     food_id = models.ForeignKey(Food, on_delete=models.CASCADE)
-    email = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     meal_time = models.DateTimeField()
 
