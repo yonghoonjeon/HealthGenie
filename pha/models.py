@@ -38,13 +38,20 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    MALE = 'male'
+    FEMALE = 'female'
+
+    SEX = (
+        (MALE, '남성'),
+        (FEMALE, '여성')
+    )
     us_id = models.AutoField(primary_key=True)
     user_name = models.CharField(max_length=50, blank=True)
     email = models.EmailField(unique=True)
     is_staff = models.BooleanField(_("staff status"), default=False)
     is_active = models.BooleanField(_("active"), default=True)
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
-    sex = models.CharField(max_length=6)
+    sex = models.CharField(max_length=6, choices=SEX)
     age = models.PositiveIntegerField()
     height = models.PositiveIntegerField()
     weight = models.PositiveIntegerField()
