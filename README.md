@@ -24,11 +24,11 @@ DATABASES = {
     }
 }
 ```
-Go to the HealthGenie folder and migrate.
+Go to the HealthGenie folder and migrate
 ```shell
 python manage.py migrate
 ```
-then run server
+then run server.
 ```shell
 python manage.py runserver
 ```
