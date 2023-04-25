@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>프로젝트 상세 정보</title>
+    <style>
+        h1 {
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>프로젝트 상세 정보</h1>
+    <table>
+        <tr>
+            <th>프로젝트명</th>
+            <td>{{ project.p_name }}</td>
+        </tr>
+        <tr>
+            <th>목표 체중</th>
+            <td>{{ project.goal_weight }} kg</td>
+        </tr>
+        <tr>
+            <th>목표 BMI</th>
+            <td>{{ project.goal_bmi }}</td>
+        </tr>
+        <tr>
+            <th>시작 일시</th>
+            <td>{{ project.start_time }}</td>
+        </tr>
+        <tr>
+            <th>종료 일시</th>
+            <td>{{ project.end_time }}</td>
+        </tr>
+        <tr>
+            <th>생성자</th>
+            <td>{{ project.user.user_name }}</td>
+        </tr>
+        <tr>
+            <th>생성 일시</th>
+            <td>{{ project.created_at }}</td>
+        </tr>
+    </table>
+    <br>
+    <a href="{% url 'project_list' %}">프로젝트 목록으로 돌아가기</a>
+</body>
+</html>

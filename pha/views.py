@@ -1,14 +1,27 @@
 from django.http import JsonResponse, HttpResponse
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm,ProjectForm
 from django.contrib import messages
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import login, authenticate, logout
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import CreateView
+from django.urls import reverse_lazy
+from .models import Project
+import streamlit as st
+import subprocess
+import os
 
 # Create your views here.
 def index(request):
-    return HttpResponse("안녕하세요 PHA에 오신것을 환영합니다.")
+    return redirect('project_list')
 
+def streamlit(request):
+    # os.chdir('/Users/hwang/Desktop/HealthGenie/HealthGenie/pha')
+    # os.system("streamlit run streamlit_app.py")
+    streamlit_app_dir = '/Users/hwang/Desktop/HealthGenie/HealthGenie/pha'
+    subprocess.Popen(['streamlit', 'run', 'streamlit_app.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
+    return render(request, 'pha/home.html')
 
 def register_view(request):
     """
@@ -41,3 +54,30 @@ def login_view(request):
         return HttpResponse("오류")
 
     return render(request, 'pha/login.html')
+
+@login_required
+def project_list(request):
+    projects = Project.objects.filter(user=request.user)
+    context = {'projects': projects}
+    return render(request, 'pha/project_list.html', context)
+
+
+class ProjectCreateView(LoginRequiredMixin, CreateView):
+    model = Project
+    form_class = ProjectForm
+    template_name = 'pha/create_project.html'
+    success_url = reverse_lazy('project_list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+def project_detail(request, project_id):
+    project = Project.objects.get(pk=project_id)
+    context = {'project': project}
+    return render(request, 'pha/project_detail.html', context)
+
+def streamlit_view(request):
+    # Streamlit 코드 작성
+    st.title("Hello, Streamlit!")
+    st.write("This is a Streamlit app embedded in a Django app.")

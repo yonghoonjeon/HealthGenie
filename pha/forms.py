@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import User,Project
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -20,3 +20,8 @@ class UserRegisterForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['p_name','is_achieved','goal_weight', 'goal_bmi', 'start_time', 'end_time']
