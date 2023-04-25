@@ -24,7 +24,7 @@ DATABASES = {
     }
 }
 ```
-Go to the HealthGenie folder and migrate
+Do migration
 ```shell
 python manage.py migrate
 ```
