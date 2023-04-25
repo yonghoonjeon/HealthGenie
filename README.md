@@ -8,7 +8,7 @@ required packages need to be installed
 pip install -r requirements.txt
 ```
 ### Usage
-Go to the HealthGenie folder and modify my_settings.py as your Database connection.
+Go to the HealthGenie folder and modify my_settings.py as your own Database connection.
 ```python
 ...
 # Database
