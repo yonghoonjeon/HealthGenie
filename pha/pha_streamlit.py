@@ -232,7 +232,7 @@ if uploaded_file is not None:
         # query = f'select p_name, goal_weight from pha_project where user_id = \'{user}\''
 
         # 아래는 예시로 user_id = 11 인 경우에 대해 쿼리를 작성함
-        # 몸표 정보 가져오기 / 몸무게 비교
+        # 몸무게 정보 가져오기 / 몸무게 비교
         query = "select p_name, goal_weight from pha_project where user_id = '11'; "
         
         cur = conn.cursor()
