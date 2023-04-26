@@ -152,7 +152,7 @@ if uploaded_file is not None:
             host = 'localhost', # find it from my_setting.spy in HealthGeinie directory
             database = 'pha_test',
             user = 'postgres',
-            password = '#Seraphic0845'
+            password = '####'
         )
 
         # 칼로리 분석 정보 가져오기
