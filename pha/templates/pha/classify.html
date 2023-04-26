@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Image Classification</title>
+</head>
+<body>
+    <h1>Food Image Classification</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="image">
+        <input type="submit" value="Classify">
+    </form>
+    {% if food_class %}
+        <h2>Classification:</h2>
+        <p>The image is classified as {{ food_class }} with a probability of {{ probability }}.</p>
+    {% endif %}
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% endif %}
+</body>
+</html>

@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from .models import Project
 import streamlit as st
 import subprocess
+from PIL import Image
 import os
 
 # Create your views here.
@@ -20,8 +21,58 @@ def streamlit(request):
     # os.chdir('/Users/hwang/Desktop/HealthGenie/HealthGenie/pha')
     # os.system("streamlit run streamlit_app.py")
     streamlit_app_dir = '/Users/hwang/Desktop/HealthGenie/HealthGenie/pha'
-    subprocess.Popen(['streamlit', 'run', 'streamlit_app.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
+    subprocess.Popen(['streamlit', 'run', 'daye_streamlit_2.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
     return render(request, 'pha/home.html')
+
+import base64
+import cv2
+import numpy as np
+import requests
+from PIL import Image
+from django.shortcuts import render
+
+
+def classify_image(request):
+    if request.method == 'POST':
+        # try to get the uploaded file from the request
+        try:
+            uploaded_file = request.FILES['image']
+        except KeyError:
+            error_message = "No image file found."
+            return render(request, 'pha/classify.html', {'error_message': error_message})
+
+        # Define the API endpoint and parameters
+        api_key = "d9b5f98d641f40748fb64aa423495b87"
+        input_url = 'https://api.spoonacular.com/food/images/classify'
+        params = {'apiKey': api_key}
+
+        # Send a POST request to the API endpoint and store the response
+        response = requests.post(input_url, params=params, files={'file': uploaded_file})
+
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Extract the data from the response
+            data = response.json()
+
+            # Get the class of the food item with the highest probability
+            food_class = data['category']
+
+            # Get the probability of the predicted class
+            probability = data['probability']
+
+        else:
+            # If the request was not successful, display an error message
+            food_class = None
+            probability = None
+            error_message = f"Request error: {response.status_code}"
+            return render(request, 'pha/classify.html', {'error_message': error_message})
+
+        # Render the HTML template with the classification results
+        return render(request, 'pha/classify.html', {'food_class': food_class, 'probability': probability})
+
+    else:
+        # Render the HTML template with the image upload form
+        return render(request, 'pha/classify.html')
 
 def register_view(request):
     """
@@ -74,8 +125,50 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
 def project_detail(request, project_id):
     project = Project.objects.get(pk=project_id)
-    context = {'project': project}
-    return render(request, 'pha/project_detail.html', context)
+    streamlit_app_dir = '/Users/hwang/Desktop/HealthGenie/HealthGenie/pha'
+    subprocess.Popen(['streamlit', 'run', 'daye_streamlit_2.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
+
+    if request.method == 'POST':
+        # try to get the uploaded file from the request
+        try:
+            uploaded_file = request.FILES['image']
+        except KeyError:
+            error_message = "No image file found."
+            return render(request, 'pha/project_detail.html', {'error_message': error_message, 'project': project})
+
+        # Define the API endpoint and parameters
+        api_key = "d9b5f98d641f40748fb64aa423495b87"
+        input_url = 'https://api.spoonacular.com/food/images/classify'
+        params = {'apiKey': api_key}
+
+        # Send a POST request to the API endpoint and store the response
+        response = requests.post(input_url, params=params, files={'file': uploaded_file})
+
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Extract the data from the response
+            data = response.json()
+
+            # Get the class of the food item with the highest probability
+            food_class = data['category']
+
+            # Get the probability of the predicted class
+            probability = data['probability']
+
+            # Render the HTML template with the classification results
+            return render(request, 'pha/project_detail.html', {'food_class': food_class, 'probability': probability, 'project': project})
+
+        else:
+            # If the request was not successful, display an error message
+            food_class = None
+            probability = None
+            error_message = f"Request error: {response.status_code}"
+            return render(request, 'pha/project_detail.html', {'error_message': error_message, 'project': project})
+
+    else:
+        # Render the HTML template with the project details
+        context = {'project': project}
+        return render(request, 'pha/project_detail.html', context)
 
 def streamlit_view(request):
     # Streamlit 코드 작성

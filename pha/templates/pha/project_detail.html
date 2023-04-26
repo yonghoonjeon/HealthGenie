@@ -55,5 +55,24 @@
     </table>
     <br>
     <a href="{% url 'project_list' %}">프로젝트 목록으로 돌아가기</a>
+
+    <h2>Streamlit App</h2>
+    <div style="width:100%;height:800px;overflow:hidden;">
+        <iframe src="http://localhost:8501" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
+    </div>
+
+    <h2>Food Image Classification</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="image">
+        <input type="submit" value="Classify">
+    </form>
+    {% if food_class %}
+        <h3>Classification:</h3>
+        <p>The image is classified as {{ food_class }} with a probability of {{ probability }}.</p>
+    {% endif %}
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% endif %}
 </body>
 </html>

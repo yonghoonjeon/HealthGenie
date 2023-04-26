@@ -7,8 +7,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'pha_test',
-        'USER': '####',
-        'PASSWORD': '####',
+        'USER': 'postgres',
+        'PASSWORD': '0702',
         'HOST': 'localhost',
         'PORT': '5432',
     }
