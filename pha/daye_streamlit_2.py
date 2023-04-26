@@ -160,25 +160,31 @@ if uploaded_file is not None:
         query = "select f_name, calories, protein, fat, carbs from pha_food where f_name = 'burrito'; "
         cur = conn.cursor()
         cur.execute(query)
-        #cal_info = cur.fetchone()[0] # SQL DB에서 실행된 쿼리 결과 중 첫번째 행을 가져오는 메서드, 이 메서드는 가져온 결과를 튜플로 반환 / data = cur.fetchall()
         cal_info = cur.fetchall()
+
         # Convert data to pandas dataframe
         df = pd.DataFrame(data=cal_info, columns=['food name', 'calories', 'protein', 'fat', 'carbs'])
 
-        caloires = df['calories']
-        protein = df['protein']
-        fat = df['fat']
-        carbs = df['carbs']
+        calories = int(df['calories'].iloc[0])
+        protein = int(df['protein'].iloc[0])
+        fat = int(df['fat'].iloc[0])
+        carbs = int(df['carbs'].iloc[0])
 
         st.markdown(
-            "For this meal, you consumed {} calories from carbs, {} calories from protein, and {} calories from fat.".format(
-                carbs, protein, fat
+            "For this meal, you consumed **{} kcal from carbs, {} kcal from protein, and {} kcal from fat. Total calories are {} kcal.**".format(
+                carbs, protein, fat, calories
             )
         )
 
-        # Close database connection
-        #conn.close()
+        fig = make_subplots(rows=1, cols=1)
 
+        fig.add_trace(go.Bar(x=["calories", "Carbs", "Protein", "Fat"], y=[calories, carbs, protein, fat], width=0.5, marker=dict(color=['#7DB7FE', '#1f77b4', '#1f77b4', '#1f77b4'])))
+        # fig.add_trace(go.Bar(x=["calories", "Carbs", "Protein", "Fat"], y=[calories, carbs, protein, fat], width=0.5, marker=dict(color=['#1f77b4', '#7DB7FE', '#7DB7FE', '#7DB7FE'])))
+        
+        fig.update_layout(title='📊 Calorie Analysis')
+
+        # st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig)
 
     with row2:
         st.subheader("Diet Recommendations")
