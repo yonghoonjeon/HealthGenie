@@ -1,4 +1,3 @@
-
 # import re
 # import time
 # from dataclasses import dataclass
@@ -9,6 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 # import pypistats
 import requests
 import streamlit as st
+# import yaml
 import psycopg2
 # from bs4 import BeautifulSoup
 # from markdownlit import mdlit
@@ -25,11 +25,6 @@ import base64
 # 세라 추가
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
-
-# from streamlit_profiler import Profiler
-
-# profiler = Profiler()
-
 
 # from streamlit_profiler import Profiler
 
@@ -174,7 +169,7 @@ if uploaded_file is not None:
 
         # Convert data to pandas dataframe
         df = pd.DataFrame(data=cal_info, columns=['food name', 'calories', 'protein', 'fat', 'carbs'])
-
+        # st.dataframe(df)
         calories = int(df['calories'].iloc[0])
         protein = int(df['protein'].iloc[0])
         fat = int(df['fat'].iloc[0])
@@ -218,14 +213,70 @@ if uploaded_file is not None:
         except IndexError:
             st.warning("이번에는 추천할 식단이 없습니다 🥲")
 
-    # with row3:
-    #     st.subheader("My Goal")
+    with row2:
+        # 소정 파트 추가
+        st.subheader("My Goal")
 
-    #     # connection_info = "host=147.47.200.145 dbname=teamdb1 user=team1 password=bkms1130 port=34543"
-    #     # # PostgreSQL 연결
-    #     # conn = psycopg2.connect(connection_info)
+        # PostgreSQL 연결
+        conn = psycopg2.connect(
+            host='localhost',  # find it from my_setting.spy in HealthGeinie directory
+            database='pha_test',
+            user='postgres',
+            password='zx650604zx!'
+        )
 
-    #     # 목표 정보 가져오기 / 몸무게 변화
+        # (나중에 구현할 내용) 스키마 수정 후 몸무게를 추적해서 '몸무게 변화량'을 선 그래프로 나타낼 수 있도록 해야 함
+        # (나중에 구현할 내용) 접속하고 있는 사용자의 user_id를 자동으로 user 변수에 저장할 수 있도록 해야 함
+        # user = ##
+        # query = f'select p_name, goal_weight from pha_project where user_id = \'{user}\''
+
+        # 아래는 예시로 user_id = 11 인 경우에 대해 쿼리를 작성함
+        # 몸무게 정보 가져오기 / 몸무게 비교
+        query = "select p_name, goal_weight from pha_project where user_id = '11'; "
+
+        cur = conn.cursor()
+        cur.execute(query)
+        goal_weight_info = cur.fetchall()
+
+        st.markdown("Select the project you'd like to compare your current weight to your goal weight.")
+
+        # Convert data to pandas dataframe
+        df = pd.DataFrame(data=goal_weight_info, columns=['p_name', 'goal_weight'])
+
+        # st.selectbox()를 사용하여 하나의 p_name을 선택
+        selected_project = st.selectbox("[Your project list]", options=df['p_name'].unique())
+
+        # 선택된 p_name에 해당하는 goal_weight를 goal_weight라는 변수에 저장
+        goal_weight = df.loc[df['p_name'] == selected_project, 'goal_weight'].values[0]
+        # st.write(f"{selected_project}: {goal_weight}")
+
+        query = "select weight from pha_user where us_id = '11'"
+        cur = conn.cursor()
+        cur.execute(query)
+        current_weight_info = cur.fetchall()
+        df = pd.DataFrame(data=current_weight_info, columns=['weight'])
+        current_weight = int(df['weight'].iloc[0])
+
+        fig = make_subplots(rows=1, cols=1)
+        fig.add_trace(go.Bar(x=["goal_weight", "current_weight"], y=[goal_weight, current_weight], width=0.5,
+                             marker=dict(color=['#7DB7FE', '#1f77b4', '#1f77b4', '#1f77b4'])))
+        fig.update_layout(title='📊 Weight comparison')
+
+        # st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig)
+
+        # 몸무게 비교 결과에 대한 간략한 report
+        if goal_weight < current_weight:
+            weight_diff = current_weight - goal_weight
+            st.write(
+                f"Your current weight is ({weight_diff}) kg higher than your goal weight. Let's try a little harder!")
+        elif goal_weight > current_weight:
+            weight_diff = goal_weight - current_weight
+            st.markdown(f"Your current weight is ({weight_diff}) kg lower than your goal weight.")
+            # 체중 감소에 대한 문구 더 추가하기
+
+        # 나중에 구현할 내용 : 몸무게 변화 추세 변화에 대한 간략한 설명
+
     #     query = "select max(칼로리) from nutrients" # 쿼리문 수정
     #     cur = conn.cursor()
     #     cur.execute(query)

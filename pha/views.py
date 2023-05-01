@@ -20,7 +20,7 @@ def index(request):
 def streamlit(request):
     # os.chdir('/Users/hwang/Desktop/HealthGenie/HealthGenie/pha')
     # os.system("streamlit run streamlit_app.py")
-    streamlit_app_dir = '/Users/hwang/Desktop/HealthGenie/HealthGenie/pha'
+    streamlit_app_dir = '/Users/yjhwang/HealthGenie/pha'
     subprocess.Popen(['streamlit', 'run', 'daye_streamlit_2.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
     return render(request, 'pha/home.html')
 
@@ -125,7 +125,7 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
 def project_detail(request, project_id):
     project = Project.objects.get(pk=project_id)
-    streamlit_app_dir = '/Users/hwang/Desktop/HealthGenie/HealthGenie/pha'
+    streamlit_app_dir = '/Users/yjhwang/HealthGenie/pha'
     subprocess.Popen(['streamlit', 'run', 'daye_streamlit_2.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
 
     if request.method == 'POST':
