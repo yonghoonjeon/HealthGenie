@@ -22,11 +22,6 @@ import numpy as np
 # from streamlit_dimensions import st_dimensions
 from streamlit_pills import pills
 import base64
-# 세라 추가
-import plotly.graph_objs as go
-from plotly.subplots import make_subplots
-
-
 # from streamlit_profiler import Profiler
 
 # profiler = Profiler()
@@ -69,7 +64,7 @@ col1, col2 = st.columns([2, 1])
 uploaded_file = col1.file_uploader("Please upload a picture of the food you ate today.", type=['jpg', 'png', 'jpeg'])
 
 row1_space, row1, row2_space, row2, row3_space, row3, row4_space = st.columns(
-    (0.1, 2, 0.1, 2, 0.1, 2, 0.1)
+    (0.1, 1, 0.1, 1, 0.1, 1, 0.1)
 )
 
 food_class = "burrito"
@@ -115,7 +110,6 @@ if uploaded_file is not None:
 
         # API key for Spoonacular API
         api_key = "d9b5f98d641f40748fb64aa423495b87"
-
         # API url
         input_url = 'https://api.spoonacular.com/food/images/classify'
 
@@ -158,7 +152,7 @@ if uploaded_file is not None:
             host = 'localhost', # find it from my_setting.spy in HealthGeinie directory
             database = 'pha_test',
             user = 'postgres',
-            password = '####'
+            password = '#Seraphic0845'
         )
 
         # 칼로리 분석 정보 가져오기
@@ -166,31 +160,25 @@ if uploaded_file is not None:
         query = "select f_name, calories, protein, fat, carbs from pha_food where f_name = 'burrito'; "
         cur = conn.cursor()
         cur.execute(query)
+        #cal_info = cur.fetchone()[0] # SQL DB에서 실행된 쿼리 결과 중 첫번째 행을 가져오는 메서드, 이 메서드는 가져온 결과를 튜플로 반환 / data = cur.fetchall()
         cal_info = cur.fetchall()
-
         # Convert data to pandas dataframe
         df = pd.DataFrame(data=cal_info, columns=['food name', 'calories', 'protein', 'fat', 'carbs'])
 
-        calories = int(df['calories'].iloc[0])
-        protein = int(df['protein'].iloc[0])
-        fat = int(df['fat'].iloc[0])
-        carbs = int(df['carbs'].iloc[0])
+        caloires = df['calories']
+        protein = df['protein']
+        fat = df['fat']
+        carbs = df['carbs']
 
         st.markdown(
-            "For this meal, you consumed **{} kcal from carbs, {} kcal from protein, and {} kcal from fat. Total calories are {} kcal.**".format(
-                carbs, protein, fat, calories
+            "For this meal, you consumed {} calories from carbs, {} calories from protein, and {} calories from fat.".format(
+                carbs, protein, fat
             )
         )
 
-        fig = make_subplots(rows=1, cols=1)
+        # Close database connection
+        #conn.close()
 
-        fig.add_trace(go.Bar(x=["calories", "Carbs", "Protein", "Fat"], y=[calories, carbs, protein, fat], width=0.5, marker=dict(color=['#7DB7FE', '#1f77b4', '#1f77b4', '#1f77b4'])))
-        # fig.add_trace(go.Bar(x=["calories", "Carbs", "Protein", "Fat"], y=[calories, carbs, protein, fat], width=0.5, marker=dict(color=['#1f77b4', '#7DB7FE', '#7DB7FE', '#7DB7FE'])))
-        
-        fig.update_layout(title='📊 Calorie Analysis')
-
-        # st.plotly_chart(fig, use_container_width=True)
-        st.plotly_chart(fig)
 
     with row2:
         st.subheader("Diet Recommendations")

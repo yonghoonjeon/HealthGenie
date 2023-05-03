@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import re
 import time
 from dataclasses import dataclass
@@ -21,12 +22,40 @@ import streamlit as st
 import numpy as np
 # from streamlit_dimensions import st_dimensions
 from streamlit_pills import pills
+=======
+# import re
+# import time
+# from dataclasses import dataclass
+# from datetime import datetime, timedelta
+# from typing import List
+from PIL import Image, ImageDraw, ImageFont
+# import httpx
+# import pypistats
+import requests
+import streamlit as st
+# import yaml
+import psycopg2
+# from bs4 import BeautifulSoup
+# from markdownlit import mdlit
+# from stqdm import stqdm
+import cv2
+# import sqlite3
+import pandas as pd
+# import plotly.express as px
+import streamlit as st
+import numpy as np
+# # from streamlit_dimensions import st_dimensions
+# from streamlit_pills import pills
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
 import base64
 # 세라 추가
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
 # from streamlit_profiler import Profiler
 
 # profiler = Profiler()
@@ -38,16 +67,28 @@ st.set_page_config("Health Genie", layout="wide")
 st.markdown("# Health Genie 🧞‍♂️")
 NUM_COLS = 3
 
+<<<<<<< HEAD
 # st.header("Health Genie 🧞‍♂️")
 
 
 def icon(emoji: str): # icon 함수는 문자열 형식의 이모지를 인자로 받아, Notion 페이지 아이콘과 같은 큰 크기의 이모지를 스크린에 표시
+=======
+
+# st.header("Health Genie 🧞‍♂️")
+
+
+def icon(emoji: str):  # icon 함수는 문자열 형식의 이모지를 인자로 받아, Notion 페이지 아이콘과 같은 큰 크기의 이모지를 스크린에 표시
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
     """Shows an emoji as a Notion-style page icon."""
     st.write(
         f'<span style="font-size: 78px; line-height: 1">{emoji}</span>',
         unsafe_allow_html=True,
     )
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
 # st.write 함수는 HTML 스타일 시트를 지정하는 문자열을 인자로 받아, Streamlit 애플리케이션에서 특정 HTML 엘리먼트의 스타일을 변경
 st.write(
     '<style>button[title="View fullscreen"], h4 a {display: none !important} [data-testid="stImage"] img {border: 1px solid #D6D6D9; border-radius: 3px; height: 200px; object-fit: cover; width: 100%} .block-container img:hover {}</style>',
@@ -64,7 +105,11 @@ description = st.empty()
 description.write(description_text.format("all"))
 col1, col2 = st.columns([2, 1])
 
+<<<<<<< HEAD
 # daye 수정 
+=======
+# daye 수정
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
 uploaded_file = col1.file_uploader("Please upload a picture of the food you ate today.", type=['jpg', 'png', 'jpeg'])
 
 row1_space, row1, row2_space, row2, row3_space, row3, row4_space = st.columns(
@@ -80,6 +125,7 @@ if uploaded_file is not None:
         # Display the result of foodAPI on a Streamlit web page
         st.subheader("Food Classification Result")
 
+<<<<<<< HEAD
         #src_image = load_image(uploaded_file)
         image = Image.open(uploaded_file)	
         
@@ -96,6 +142,24 @@ if uploaded_file is not None:
         #uploaded_img = cv2.imread(img_array)
         image_path = './image.png'
         #need to store image first to change it into url address 
+=======
+        # src_image = load_image(uploaded_file)
+        image = Image.open(uploaded_file)
+
+        st.image(uploaded_file, caption='Input Image', use_column_width=True)
+        # st.write(os.listdir())
+        # im = imgGen2(uploaded_file)
+        # st.image(im, caption='ASCII art', use_column_width=True)
+
+        # daye 수정
+        image = np.array(image)
+
+        # we can also modify image like by yolov5 here
+
+        # uploaded_img = cv2.imread(img_array)
+        image_path = './image.png'
+        # need to store image first to change it into url address
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         cv2.imwrite(image_path, image)
 
         # for one image (you need to change this if you want to put a list)
@@ -111,7 +175,10 @@ if uploaded_file is not None:
             # Construct the URL for the encoded image data
             image_url = f"data:image/png;base64,{image_base64}"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         # API key for Spoonacular API
         api_key = "d9b5f98d641f40748fb64aa423495b87"
 
@@ -119,7 +186,11 @@ if uploaded_file is not None:
         input_url = 'https://api.spoonacular.com/food/images/classify'
 
         # classify it using the Spoonacular API
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         # Define the API endpoint and query parameters
         params = {'apiKey': api_key, 'imageUrl': image_url}
 
@@ -131,6 +202,7 @@ if uploaded_file is not None:
             # Extract the data from the response
             data = response.json()
             # Do something with the data (e.g. display it in a Streamlit app)
+<<<<<<< HEAD
             
             #Get the class of the food item with the highest probability 
             food_class = data['category']
@@ -139,10 +211,21 @@ if uploaded_file is not None:
             probability = data['probability']
             
         
+=======
+
+            # Get the class of the food item with the highest probability
+            food_class = data['category']
+
+            # Get the probability of the predicted class
+            probability = data['probability']
+
+
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         else:
             # If the request was not successful, display an error message
             st.error(f"Request error: {response.status_code}")
 
+<<<<<<< HEAD
         description_text = "The image is classified as {} with a probability of {}" 
         description = st.empty()
         description.write(description_text.format(food_class, probability))
@@ -162,6 +245,27 @@ if uploaded_file is not None:
 
         # 칼로리 분석 정보 가져오기
         # we need to change here to get real-time data from the request result 
+=======
+        description_text = "The image is classified as {} with a probability of {}"
+        description = st.empty()
+        description.write(description_text.format(food_class, probability))
+
+    with row2:
+        st.subheader("Today's Calorie Analysis")
+
+        # connection_info = "host=147.47.200.145 dbname=pha user=dayelee password=0847 port=5432"
+
+        # PostgreSQL 연결
+        conn = psycopg2.connect(
+            host='localhost',  # find it from my_setting.spy in HealthGeinie directory
+            database='pha_test',
+            user='postgres',
+            password='zx650604zx!'
+        )
+
+        # 칼로리 분석 정보 가져오기
+        # we need to change here to get real-time data from the request result
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         query = "select f_name, calories, protein, fat, carbs from pha_food where f_name = 'burrito'; "
         cur = conn.cursor()
         cur.execute(query)
@@ -169,7 +273,11 @@ if uploaded_file is not None:
 
         # Convert data to pandas dataframe
         df = pd.DataFrame(data=cal_info, columns=['food name', 'calories', 'protein', 'fat', 'carbs'])
+<<<<<<< HEAD
         #st.dataframe(df)
+=======
+        # st.dataframe(df)
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         calories = int(df['calories'].iloc[0])
         protein = int(df['protein'].iloc[0])
         fat = int(df['fat'].iloc[0])
@@ -183,9 +291,16 @@ if uploaded_file is not None:
 
         fig = make_subplots(rows=1, cols=1)
 
+<<<<<<< HEAD
         fig.add_trace(go.Bar(x=["calories", "Carbs", "Protein", "Fat"], y=[calories, carbs, protein, fat], width=0.5, marker=dict(color=['#7DB7FE', '#1f77b4', '#1f77b4', '#1f77b4'])))
         # fig.add_trace(go.Bar(x=["calories", "Carbs", "Protein", "Fat"], y=[calories, carbs, protein, fat], width=0.5, marker=dict(color=['#1f77b4', '#7DB7FE', '#7DB7FE', '#7DB7FE'])))
         
+=======
+        fig.add_trace(go.Bar(x=["calories", "Carbs", "Protein", "Fat"], y=[calories, carbs, protein, fat], width=0.5,
+                             marker=dict(color=['#7DB7FE', '#1f77b4', '#1f77b4', '#1f77b4'])))
+        # fig.add_trace(go.Bar(x=["calories", "Carbs", "Protein", "Fat"], y=[calories, carbs, protein, fat], width=0.5, marker=dict(color=['#1f77b4', '#7DB7FE', '#7DB7FE', '#7DB7FE'])))
+
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         fig.update_layout(title='📊 Calorie Analysis')
 
         # st.plotly_chart(fig, use_container_width=True)
@@ -194,6 +309,7 @@ if uploaded_file is not None:
     with row2:
         st.subheader("Diet Recommendations")
 
+<<<<<<< HEAD
 
         query = "select pha_food.f_name as food_name from (select pha_meal.meals_id, pha_meal.food_id_id from pha_meal join (select * from pha_project join pha_user on pha_project.user_id = pha_user.us_id where pha_project.is_achieved = true) as temp on temp.user_id = pha_meal.user_id where temp.goal_bmi = 23) as curr join pha_food on pha_food.food_id = curr.food_id_id where curr.food_id_id = pha_food.food_id limit 3;" # 쿼리문 수정
         cur = conn.cursor()
@@ -203,23 +319,42 @@ if uploaded_file is not None:
 
         # Convert data to pandas dataframe
         df = pd.DataFrame(data = recommendation_info, columns=['food_name'])
+=======
+        query = "select pha_food.f_name as food_name from (select pha_meal.meals_id, pha_meal.food_id_id from pha_meal join (select * from pha_project join pha_user on pha_project.user_id = pha_user.us_id where pha_project.is_achieved = true) as temp on temp.user_id = pha_meal.user_id where temp.goal_bmi = 23) as curr join pha_food on pha_food.food_id = curr.food_id_id where curr.food_id_id = pha_food.food_id limit 3;"  # 쿼리문 수정
+        cur = conn.cursor()
+        cur.execute(query)
+        # recommendation_info = cur.fetchone()[0] # SQL DB에서 실행된 쿼리 결과 중 첫번째 행을 가져오는 메서드, 이 메서드는 가져온 결과를 튜플로 반환 / data = cur.fetchall()
+        recommendation_info = cur.fetchall()
+
+        # Convert data to pandas dataframe
+        df = pd.DataFrame(data=recommendation_info, columns=['food_name'])
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
 
         try:
             st.markdown(
                 "Today's recommended meal is {}, {}. {}.".format(
+<<<<<<< HEAD
                     df['food_name'].iloc[0],df['food_name'].iloc[1], df['food_name'].iloc[2]
+=======
+                    df['food_name'].iloc[0], df['food_name'].iloc[1], df['food_name'].iloc[2]
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
                 )
             )
         except IndexError:
             st.warning("이번에는 추천할 식단이 없습니다 🥲")
 
+<<<<<<< HEAD
 
     with row2: 
+=======
+    with row2:
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         # 소정 파트 추가
         st.subheader("My Goal")
 
         # PostgreSQL 연결
         conn = psycopg2.connect(
+<<<<<<< HEAD
             host = 'localhost', # find it from my_setting.spy in HealthGeinie directory
             database = 'pha_test',
             user = 'user',
@@ -228,13 +363,27 @@ if uploaded_file is not None:
 
         # (나중에 구현할 내용) 스키마 수정 후 몸무게를 추적해서 '몸무게 변화량'을 선 그래프로 나타낼 수 있도록 해야 함
         # (나중에 구현할 내용) 접속하고 있는 사용자의 user_id를 자동으로 user 변수에 저장할 수 있도록 해야 함 
+=======
+            host='localhost',  # find it from my_setting.spy in HealthGeinie directory
+            database='pha_test',
+            user='postgres',
+            password='zx650604zx!'
+        )
+
+        # (나중에 구현할 내용) 스키마 수정 후 몸무게를 추적해서 '몸무게 변화량'을 선 그래프로 나타낼 수 있도록 해야 함
+        # (나중에 구현할 내용) 접속하고 있는 사용자의 user_id를 자동으로 user 변수에 저장할 수 있도록 해야 함
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         # user = ##
         # query = f'select p_name, goal_weight from pha_project where user_id = \'{user}\''
 
         # 아래는 예시로 user_id = 11 인 경우에 대해 쿼리를 작성함
         # 몸무게 정보 가져오기 / 몸무게 비교
         query = "select p_name, goal_weight from pha_project where user_id = '11'; "
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         cur = conn.cursor()
         cur.execute(query)
         goal_weight_info = cur.fetchall()
@@ -259,23 +408,42 @@ if uploaded_file is not None:
         current_weight = int(df['weight'].iloc[0])
 
         fig = make_subplots(rows=1, cols=1)
+<<<<<<< HEAD
         fig.add_trace(go.Bar(x=["goal_weight", "current_weight"], y=[goal_weight, current_weight], width=0.5, marker=dict(color=['#7DB7FE', '#1f77b4', '#1f77b4', '#1f77b4'])))
         fig.update_layout(title='📊 Weight comparison')
 
         # st.plotly_chart(fig, use_container_width=True)
         st.plotly_chart(fig)  
+=======
+        fig.add_trace(go.Bar(x=["goal_weight", "current_weight"], y=[goal_weight, current_weight], width=0.5,
+                             marker=dict(color=['#7DB7FE', '#1f77b4', '#1f77b4', '#1f77b4'])))
+        fig.update_layout(title='📊 Weight comparison')
+
+        # st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig)
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
 
         # 몸무게 비교 결과에 대한 간략한 report
         if goal_weight < current_weight:
             weight_diff = current_weight - goal_weight
+<<<<<<< HEAD
             st.write(f"Your current weight is ({weight_diff}) kg higher than your goal weight. Let's try a little harder!")
+=======
+            st.write(
+                f"Your current weight is ({weight_diff}) kg higher than your goal weight. Let's try a little harder!")
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
         elif goal_weight > current_weight:
             weight_diff = goal_weight - current_weight
             st.markdown(f"Your current weight is ({weight_diff}) kg lower than your goal weight.")
             # 체중 감소에 대한 문구 더 추가하기
 
+<<<<<<< HEAD
         # 나중에 구현할 내용 : 몸무게 변화 추세 변화에 대한 간략한 설명  
     
+=======
+        # 나중에 구현할 내용 : 몸무게 변화 추세 변화에 대한 간략한 설명
+
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
     #     query = "select max(칼로리) from nutrients" # 쿼리문 수정
     #     cur = conn.cursor()
     #     cur.execute(query)
@@ -289,7 +457,11 @@ if uploaded_file is not None:
     #     year_author_df.reset_index(inplace=True)
     #     year_author_df = year_author_df[year_author_df["read_at_year"] != ""]
     #     year_author_df["read_at_year"] = pd.to_datetime(year_author_df["read_at_year"])
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
     #     # plot line plot in plotly of year_author_df with x axis as read_at_year, y axis is percentage, color is author gender
     #     fig = px.line(
     #     year_author_df,
@@ -308,6 +480,10 @@ if uploaded_file is not None:
     #     )
     #     st.markdown(
     #         "Note that the publication date on Goodreads is the **last** publication date, so the data is altered for any book that has been republished by a publisher."
+<<<<<<< HEAD
     #     )
 
 
+=======
+    #     )
+>>>>>>> 9317f7d41cf59561c4c4b60162dda815c49e0104
