@@ -10,8 +10,12 @@ from django.urls import reverse_lazy
 from .models import Project
 import streamlit as st
 import subprocess
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
 from PIL import Image
 import os
+import io
 
 # Create your views here.
 def index(request):
@@ -29,7 +33,59 @@ import cv2
 import numpy as np
 import requests
 from PIL import Image
-from django.shortcuts import render
+import shutil
+
+
+from django.views.decorators.csrf import csrf_exempt
+
+import json
+
+# def analyze(request):
+#     result = None
+#     if request.method == 'POST':
+#         if 'image' in request.FILES:
+#             image_file = request.FILES['image']
+#             # 이미지를 POST 요청으로 보내기 위해 임시 파일로 저장합니다.
+#             with open(image_file.name, 'wb') as f:
+#                 f.write(image_file.read())
+#
+#             # API를 호출합니다.
+#             api_url = 'http://ce97-34-126-161-185.ngrok-free.app/analyze'
+#             file = {'image': open(image_file.name, 'rb')}
+#             response = requests.post(api_url, files=file)
+#
+#             # 결과 JSON을 가져옵니다.
+#             result = response.json()
+#             return render(request, 'pha/analyze.html', {'result': result})
+def analyze(request):
+    if request.method == 'POST':
+        try:
+            image = request.FILES['file']
+        except:
+            return JsonResponse({'error': 'Please select an image file.'})
+
+        path = default_storage.save('tmp/' + image.name, ContentFile(image.read()))
+
+        # 이미지 파일을 static 파일 디렉토리에 복사
+        image_path = default_storage.path(path)
+        media_path = os.path.join(settings.MEDIA_ROOT, 'uploads', image.name)
+        shutil.copyfile(image_path, media_path)
+
+        # 이 부분에 Flask 애플리케이션의 호스트 및 포트를 입력하세요.
+        flask_url = 'http://a209-34-83-252-103.ngrok-free.app/analyze'
+
+        with open(image_path, 'rb') as img:
+            response = requests.post(flask_url, files={'file': img})
+        os.remove(image_path)  # 임시 파일 삭제
+
+        if response.status_code == 200:
+            image_url = settings.MEDIA_URL + 'uploads/' + image.name
+            print(image_url)
+            return render(request, 'pha/analyze.html', {'image_url': image_url, 'result': response.json()})
+        else:
+            return JsonResponse({'error': 'An error occurred while processing the image.'})
+
+    return render(request, 'pha/analyze.html')
 
 
 def classify_image(request):
