@@ -24,4 +24,4 @@ class UserRegisterForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['p_name','is_achieved','goal_weight', 'goal_bmi', 'start_time', 'end_time']
+        fields = ['p_name', 'is_achieved', 'goal_weight', 'goal_bmi', 'goal_type', 'start_time', 'end_time']

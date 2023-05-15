@@ -73,6 +73,7 @@ class Project(models.Model):
     p_name = models.CharField(max_length=100)
     goal_weight = models.PositiveIntegerField()
     goal_bmi = models.PositiveIntegerField()
+    goal_type = models.CharField(max_length=100, default="diet")
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
 
@@ -84,6 +85,13 @@ class Food(models.Model):
     protein = models.PositiveIntegerField()
     fat = models.PositiveIntegerField()
     carbs = models.PositiveIntegerField()
+    ref_serving_size = models.PositiveIntegerField(null=True)
+    cuisine = models.CharField(max_length=100, null=True)
+    ingredients = models.CharField(max_length=255, null=True)
+    allergen = models.CharField(max_length=100, null=True)
+    dietary_restriction = models.CharField(max_length=100, null=True)
+    flavor_profile = models.CharField(max_length=100, null=True)
+    food_category = models.CharField(max_length=100, null=True)
 
 
 class Meal(models.Model):
@@ -91,3 +99,15 @@ class Meal(models.Model):
     food_id = models.ForeignKey(Food, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     meal_time = models.DateTimeField()
+    serving_size = models.FloatField(null=True)
+    rating = models.PositiveIntegerField(null=True)
+
+
+class Tracking(models.Model):
+    class Meta:
+        unique_together = (('update_time', 'user'),)
+    update_time = models.DateTimeField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    cur_weight = models.PositiveIntegerField()
+
+
