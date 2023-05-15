@@ -71,11 +71,15 @@ class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_achieved = models.BooleanField()
     p_name = models.CharField(max_length=100)
+    cur_weight = models.PositiveIntegerField(null=True)
     goal_weight = models.PositiveIntegerField()
     goal_bmi = models.PositiveIntegerField()
     goal_type = models.CharField(max_length=100, default="diet")
+    create_time = models.DateTimeField(auto_now_add=True, null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+
+
 
 
 class Food(models.Model):
