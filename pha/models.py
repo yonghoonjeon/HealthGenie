@@ -69,7 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Project(models.Model):
     project_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_achieved = models.BooleanField()
+    is_achieved = models.BooleanField(default=False)
     p_name = models.CharField(max_length=100)
     cur_weight = models.FloatField()
     goal_weight = models.FloatField()
