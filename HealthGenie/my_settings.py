@@ -6,9 +6,9 @@ SECRET_KEY = "django-insecure-!iy!ama-6vh+i+ml2apagt@0v(naf0d&l4n3$_x8ui9t(78_-y
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
+        'NAME': 'pha',
+        'USER': 'postgres',
+        'PASSWORD': '0847',
         'HOST': 'localhost',
         'PORT': '5432',
     }
