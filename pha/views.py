@@ -7,13 +7,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
-from .models import Project
+from django.utils import timezone
+from .models import Project, Tracking
 import streamlit as st
 import subprocess
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from PIL import Image
+from datetime import datetime
 import os
 import io
 
@@ -166,7 +169,19 @@ def login_view(request):
 def project_list(request):
     projects = Project.objects.filter(user=request.user)
     if request.method == 'POST':
-        form = TrackingForm(request.POST)
+        # get current datetime
+        current_datetime = timezone.now()
+        # Convert the datetime string to a datetime object
+        datetime_object = datetime.strptime(current_datetime.strftime("%Y-%m-%d %H:%M:%S.%f"), "%Y-%m-%d %H:%M:%S.%f")
+        # modified datetime
+        datetime_object = datetime_object.replace(hour=0, minute=0, second=0, microsecond=0)
+        # Check if a record with the given datetime exists
+        try:
+            instance = Tracking.objects.get(user=request.user, update_time__gt=datetime_object)
+            form = TrackingForm(request.POST, instance=instance)
+        except Tracking.DoesNotExist:
+            # Create a new record with the form data
+            form = TrackingForm(request.POST)
         if form.is_valid():
             # Save the form with the currently logged-in user
             obj = form.save(commit=False)
