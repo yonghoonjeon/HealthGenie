@@ -1,5 +1,5 @@
 from django.http import JsonResponse, HttpResponse
-from .forms import UserRegisterForm,ProjectForm
+from .forms import UserRegisterForm, ProjectForm, TrackingForm
 from django.contrib import messages
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import login, authenticate, logout
@@ -165,7 +165,19 @@ def login_view(request):
 @login_required
 def project_list(request):
     projects = Project.objects.filter(user=request.user)
-    context = {'projects': projects}
+    if request.method == 'POST':
+        form = TrackingForm(request.POST)
+        if form.is_valid():
+            # Save the form with the currently logged-in user
+            obj = form.save(commit=False)
+            # Assign the currently logged-in user
+            obj.user = request.user
+            # Redirect or return a response
+            form.save()
+            messages.success(request, "Update successfully!")
+    else:
+        form = TrackingForm()
+    context = {'projects': projects, 'form': form}
     return render(request, 'pha/project_list.html', context)
 
 
@@ -181,8 +193,8 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
 def project_detail(request, project_id):
     project = Project.objects.get(pk=project_id)
-    streamlit_app_dir = '/Users/yjhwang/HealthGenie/pha'
-    subprocess.Popen(['streamlit', 'run', 'daye_streamlit_2.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
+    streamlit_app_dir = '/Users/yonghoonjeon/Documents/PycharmProjects/HealthGenie/pha'
+    subprocess.Popen(['streamlit', 'run', 'daye_streamlit_3.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
 
     if request.method == 'POST':
         # try to get the uploaded file from the request

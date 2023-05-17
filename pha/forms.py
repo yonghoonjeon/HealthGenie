@@ -1,6 +1,6 @@
 from django import forms
 from django.forms.widgets import NumberInput
-from .models import User, Project
+from .models import User, Project, Tracking
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -44,3 +44,14 @@ class ProjectForm(forms.ModelForm):
         self.fields['start_time'] = forms.DateField(label='Start date', widget=NumberInput(attrs={'type': 'date'}))
         self.fields['end_time'] = forms.DateField(label='End date', widget=NumberInput(attrs={'type': 'date'}))
         self.fields['goal_type'] = forms.ChoiceField(label='Select your goal type', choices=GOAL_CHOICES)
+
+
+class TrackingForm(forms.ModelForm):
+    class Meta:
+        model = Tracking
+        fields = ['cur_weight']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cur_weight'] = forms.CharField(label='Current Weight (kg)')
+

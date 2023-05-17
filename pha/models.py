@@ -108,7 +108,8 @@ class Meal(models.Model):
 class Tracking(models.Model):
     class Meta:
         unique_together = (('update_time', 'user'),)
-    update_time = models.DateTimeField(primary_key=True)
+    track_id = models.AutoField(primary_key=True)
+    update_time = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cur_weight = models.FloatField()
 
