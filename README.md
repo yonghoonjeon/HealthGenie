@@ -64,5 +64,19 @@ python .\data_pha_health_info.py
 a password for all user is Jane902
 
 ### Project detail page 
+
+1. Go to the  HealthGenie/pha/view.py 
+2. you need to change a directory inside a function of project_detail(request, project_id):
+
+```python 
+    def project_detail(request, project_id):
+        project = Project.objects.get(pk=project_id)
+        #change directory for your own local computer 
+        streamlit_app_dir = 'C:/Users/daye/Desktop/P4DS/HealthGenie/pha/final_streamlit'
+        subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '1', '--project_id', '4'], cwd=streamlit_app_dir)
+
+```
 (http://127.0.0.1:8000/pha/projects/'project_id'/)
+
+ex. http://127.0.0.1:8000/pha/projects/4/
 
