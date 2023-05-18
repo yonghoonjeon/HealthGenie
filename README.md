@@ -80,3 +80,9 @@ a password for all user is Jane902
 
 ex. http://127.0.0.1:8000/pha/projects/4/
 
+### To do 
+
+1. streamlit pop 되지 않고 embedding하게 하는 법
+2. classify model 안돌아감
+3. email이 unique해야함 (veiw.py에서 email정보를 사용하여 user_id를 받게 됨.)
+
