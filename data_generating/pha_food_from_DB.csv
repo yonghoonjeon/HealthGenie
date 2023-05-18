@@ -1,0 +1,91 @@
+food_id,f_name,calories,protein,fat,carbs,ref_serving_size,cuisine,ingredients,allergen,dietary_restriction,flavor_profile,food_category
+1,hot-dog,150.0,5.0,10.0,20.0,100.0,fast food,"bun, sausage",none,none,savory,main
+2,apple,52.0,0.3,0.2,13.8,100.0,fruits,apple,none,none,sweet,snack
+3,artichoke,60.0,2.7,0.4,13.5,100.0,vegetables,artichoke,none,"vegetarian, vegan",savory,side
+4,asparagus,20.0,2.2,0.2,4.0,100.0,vegetables,asparagus,none,vegetarian,savory,side
+5,bagel,250.0,9.0,3.0,50.0,100.0,bakery,"flour, water",gluten,none,savory,main
+6,baked-goods,300.0,6.0,12.0,45.0,100.0,bakery,"flour, sugar",gluten,none,sweet,dessert
+7,banana,96.0,1.2,0.2,22.0,100.0,fruits,banana,none,none,sweet,snack
+8,beer,154.0,0.7,0.0,13.0,100.0,beverages,"barley, hops",gluten,none,bitter,beverage
+9,bell-pepper,31.0,1.3,0.3,6.0,100.0,vegetables,bell-pepper,none,none,savory,side
+10,bread,264.0,8.9,3.6,48.4,100.0,bakery,"flour, water",gluten,none,savory,main
+11,broccoli,55.0,3.7,0.6,11.2,100.0,vegetables,broccoli,none,"vegetarian, vegan",savory,side
+12,burrito,420.0,15.0,20.0,45.0,100.0,mexican,"tortilla, meat, beans, rice",none,none,savory,main
+13,cabbage,25.0,1.3,0.1,5.8,100.0,vegetables,cabbage,none,"vegetarian, vegan",savory,side
+14,cake,250.0,2.0,12.0,34.0,100.0,bakery,"flour, sugar, butter, eggs",eggs,none,sweet,dessert
+15,candy,150.0,0.0,0.3,37.0,100.0,snacks,sugar,none,none,sweet,snack
+16,cantaloupe,34.0,0.8,0.2,8.2,100.0,fruits,cantaloupe,none,none,sweet,snack
+17,carrot,41.0,0.9,0.2,10.0,100.0,vegetables,carrot,none,none,sweet,snack
+18,common-fig,74.0,0.8,0.3,19.2,100.0,fruits,common-fig,none,none,sweet,snack
+19,cookie,152.0,1.6,7.3,21.4,100.0,bakery,"flour, sugar, butter, chocolate chips",none,none,sweet,dessert
+20,dessert,300.0,5.0,15.0,38.0,100.0,various,various,none,none,sweet,dessert
+21,french-fries,365.0,3.4,17.0,52.0,100.0,fast food,potatoes,none,none,savory,side
+22,grape,69.0,0.7,0.2,18.0,100.0,fruits,grape,none,none,sweet,snack
+23,guacamole,160.0,2.0,15.0,8.0,100.0,mexican,"avocado, onion, tomato",none,"vegetarian, vegan",savory,side
+24,hot-dog,150.0,5.0,10.0,20.0,100.0,fast food,"bun, sausage",none,none,savory,main
+25,ice-cream,207.0,3.9,11.0,23.4,100.0,desserts,"milk, sugar, cream, flavorings",dairy,none,sweet,dessert
+26,muffin,426.0,6.1,19.0,58.3,100.0,bakery,"flour, sugar, butter, eggs",eggs,none,sweet,dessert
+27,orange,43.0,0.9,0.1,11.2,100.0,fruits,orange,none,none,sweet,snack
+28,pancake,227.0,6.1,9.2,31.2,100.0,breakfast,"flour, milk, eggs",eggs,none,sweet,dessert
+29,pear,57.0,0.4,0.1,15.3,100.0,fruits,pear,none,none,sweet,snack
+30,popcorn,31.0,0.9,0.4,6.2,100.0,snacks,popcorn,none,none,savory,snack
+31,pretzel,351.0,8.9,1.3,77.5,100.0,snacks,"flour, water, salt",none,none,savory,snack
+32,strawberry,32.0,0.7,0.3,7.7,100.0,fruits,strawberry,none,none,sweet,snack
+33,tomato,18.0,0.9,0.2,3.9,100.0,vegetables,tomato,none,none,savory,snack
+34,waffle,291.0,6.1,13.0,38.3,100.0,breakfast,"flour, milk, butter, eggs",eggs,none,sweet,dessert
+35,food-drinks,0.0,0.0,0.0,0.0,100.0,various,food-drinks,none,none,none,beverage
+36,cheese,402.0,25.0,33.0,2.2,100.0,dairy,milk,none,none,savory,snack
+37,cocktail,250.0,0.2,0.0,31.0,100.0,beverages,"alcohol, mixers",none,none,none,beverage
+38,coffee,2.0,0.3,0.0,0.3,100.0,beverages,"coffee beans, water",none,none,bitter,beverage
+39,cooking-spray,792.0,0.0,79.0,21.0,100.0,various,cooking-spray,none,none,none,none
+40,crab,83.0,17.5,0.9,0.0,100.0,seafood,crab,none,none,savory,main
+41,croissant,406.0,8.0,24.0,40.0,100.0,bakery,"flour, butter, sugar",none,none,savory,snack
+42,cucumber,15.0,0.6,0.1,3.6,100.0,vegetables,cucumber,none,none,none,side
+43,doughnut,452.0,5.0,25.0,49.0,100.0,bakery,"flour, sugar, butter",none,none,sweet,dessert
+44,egg,78.0,6.3,5.3,0.6,100.0,various,eggs,none,none,none,main
+45,fruit,0.0,0.0,0.0,0.0,100.0,various,fruit,none,none,none,none
+46,grapefruit,52.0,0.6,0.2,13.4,100.0,citrus,grapefruit,none,none,sweet,snack
+47,hamburger,250.0,12.0,10.0,30.0,100.0,fast food,"beef patty, bun",none,none,savory,main
+48,honeycomb,304.0,0.3,0.1,82.0,100.0,various,honey,none,none,sweet,dessert
+49,juice,54.0,0.6,0.2,13.0,100.0,various,fruit,none,none,sweet,dessert
+50,lemon,29.0,1.1,0.3,9.0,100.0,citrus,lemon,none,none,none,snack
+51,lobster,90.0,19.0,1.2,0.5,100.0,seafood,lobster,none,none,savory,main
+52,mango,60.0,0.8,0.4,15.0,100.0,fruits,mango,none,none,sweet,snack
+53,milk,60.0,3.3,3.6,4.7,100.0,dairy,milk,dairy,none,none,beverage
+54,mushroom,22.0,3.1,0.3,3.3,100.0,vegetables,mushroom,none,"vegetarian, vegan",unami,side
+55,oyster,68.0,9.0,2.0,3.0,100.0,seafood,oyster,none,none,salty,main
+56,pasta,131.0,5.0,1.1,25.5,100.0,italian,"flour, water",gluten,none,none,main
+57,pastry,300.0,6.0,15.0,35.0,100.0,bakery,"flour, butter, sugar",none,none,sweet,dessert
+58,peach,39.0,0.9,0.3,9.5,100.0,fruits,peach,none,none,sweet,snack
+59,pineapple,50.0,0.5,0.1,13.0,100.0,fruits,pineapple,none,none,sweet,snack
+60,pizza,285.0,12.0,10.0,36.0,100.0,italian,"dough, sauce, cheese, toppings","gluten, dairy",none,savory,main
+61,pomegranate,83.0,1.7,1.2,18.7,100.0,fruits,pomegranate,none,none,sweet,snack
+62,potato,77.0,2.0,0.1,17.0,100.0,vegetables,potato,none,none,none,side
+63,pumpkin,26.0,1.0,0.1,7.0,100.0,vegetables,pumpkin,none,none,none,none
+64,radish,16.0,0.6,0.1,3.4,100.0,vegetables,radish,none,none,spicy,side
+65,salad,100.0,2.5,6.8,8.6,100.0,various,"lettuce, vegetables, dressing",none,"vegetarian, vegan",none,appetizer
+66,food,0.0,0.0,0.0,0.0,100.0,various,food,none,none,none,none
+67,sandwich,250.0,12.0,10.0,30.0,100.0,various,"bread, meat, cheese, vegetables",none,none,savory,main
+68,shrimp,85.0,18.0,1.1,0.2,100.0,seafood,shrimp,none,none,unami,main
+69,squash,18.0,1.2,0.2,4.0,100.0,vegetables,squash,none,none,none,side
+70,squid,79.0,13.2,1.2,2.6,100.0,seafood,squid,none,none,savory,main
+71,submarine-sandwich,450.0,20.5,19.7,49.8,100.0,sandwiches,"bread, deli meat, cheese, vegetables",none,none,savory,main
+72,sushi,130.0,3.0,0.6,28.1,100.0,japanese,"rice, fish, vegetables",none,none,unami,main
+73,taco,170.0,9.0,10.0,12.0,100.0,mexican,"tortilla, meat, cheese, vegetables",none,none,savory,main
+74,tart,300.0,5.0,18.0,30.0,100.0,bakery,"flour, butter, sugar, filling",none,none,sweet,dessert
+75,tea,2.0,0.0,0.0,0.5,100.0,beverages,water,none,none,none,beverage
+76,vegetable,0.0,0.0,0.0,0.0,100.0,vegetables,vegetables,none,none,none,none
+77,watermelon,30.0,0.6,0.2,7.6,100.0,fruits,watermelon,none,none,none,none
+78,wine,83.0,0.1,0.0,2.6,100.0,beverages,wine,none,none,none,beverage
+79,winter-melon,16.0,0.6,0.2,3.7,100.0,fruits,winter-melon,none,none,none,snack
+80,zucchini,17.0,1.2,0.3,3.1,100.0,vegetables,zucchini,none,none,none,side
+81,banh_mi,450.0,14.0,22.0,47.0,100.0,vietnamese,"baguette, meat, pickled vegetables",none,none,savory,sandwich
+82,banh_trang_tron,250.0,5.0,3.0,52.0,100.0,vietnamese,"rice paper, toppings",none,none,savory,snack
+83,banh_xeo,250.0,6.0,10.0,27.0,100.0,vietnamese,"rice flour batter, shrimp, bean sprouts",none,none,savory,main
+84,bun_bo_hue,400.0,16.0,12.0,58.0,100.0,vietnamese,"rice noodles, spicy beef broth",none,none,spicy,main
+85,bun_dau,350.0,14.0,20.0,30.0,100.0,vietnamese,"rice noodles, fried tofu, shrimp paste",none,none,savory,main
+86,com_tam,600.0,25.0,20.0,80.0,100.0,vietnamese,"broken rice, grilled meat, pickled vegetables",none,none,savory,main
+87,goi_cuon,120.0,5.0,0.9,24.0,100.0,vietnamese,"rice paper, shrimp, vegetables",none,none,none,appetizer
+88,pho,450.0,20.0,10.0,65.0,100.0,vietnamese,"rice noodles, beef, broth",none,none,savory,main
+89,hu_tieu,250.0,8.0,3.0,50.0,100.0,vietnamese,"rice noodles, pork, seafood",none,none,savory,main
+90,xoi,150.0,4.0,2.0,30.0,100.0,vietnamese,"sticky rice, toppings",none,none,savory,main
