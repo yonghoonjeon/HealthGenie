@@ -39,6 +39,7 @@ last_login = datetime.datetime.now()
 is_superuser = False 
 is_staff = False 
 is_active = True 
+
 date_joined = datetime.datetime(2022, 1, 1, 17, 2, 30)
 
 list_sex = ['female','male']
@@ -67,6 +68,19 @@ for result_query in query_list:
     cur.execute(insert_query)
     conn.commit()
 
+update_date_query = f"""UPDATE pha_user
+SET date_joined = date_joined::timestamp AT TIME ZONE 'UTC' + INTERVAL '9 hours 30 minutes';"""
+
+cur.execute(update_date_query)
+conn.commit()
+
+last_login_update_query = f""""
+                            UPDATE pha_user
+SET last_login = last_login::timestamp AT TIME ZONE 'UTC' + INTERVAL '9 hours 30 minutes';
+                            """
+
+cur.execute(last_login_update_query)
+conn.commit()
 
 # Close the cursor and the database connection
 cur.close()
