@@ -42,3 +42,18 @@ python manage.py createsuperuser
 (http://127.0.0.1:8000/pha/signup)
 ### Signin user account
 (http://127.0.0.1:8000/pha/signin)
+
+### import data
+
+for food data,
+you have to import directly pha_food.csv file in staticfiles directory
+
+please run the below codes line by line (it will takes some time when creating meal_time)
+```shell 
+python .\data_pha_user.py
+python .\data_w_tracking.py     
+python .\data_pha_project_1.py
+python .\data_pha_project_2.py
+python .\data_pha_meal.py
+python .\data_pha_health_info.py
+```
