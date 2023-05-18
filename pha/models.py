@@ -97,12 +97,11 @@ class Food(models.Model):
 
 
 class Meal(models.Model):
-    class Meta:
-        unique_together = (('meals_id', 'food_id', 'user_id', 'meal_time'),)
     meals_id = models.AutoField(primary_key=True)
     food_id = models.ForeignKey(Food, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    meal_time = models.DateTimeField()
+    meal_time = models.DateTimeField(auto_now=True)
+    meal_type = models.CharField(max_length=100)
     serving_size = models.FloatField()
     rating = models.PositiveIntegerField()
 
