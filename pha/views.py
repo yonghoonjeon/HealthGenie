@@ -208,8 +208,9 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
 def project_detail(request, project_id):
     project = Project.objects.get(pk=project_id)
-    streamlit_app_dir = '/Users/yonghoonjeon/Documents/PycharmProjects/HealthGenie/pha'
-    subprocess.Popen(['streamlit', 'run', 'daye_streamlit_3.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
+    streamlit_app_dir = 'C:/Users/daye/Desktop/P4DS/HealthGenie/pha/final_streamlit'
+    #subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '4', '--project_id', '12', '--server.headless', 'true'], cwd=streamlit_app_dir)
+    subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '4', '--project_id', '12'], cwd=streamlit_app_dir)
 
     if request.method == 'POST':
         # try to get the uploaded file from the request

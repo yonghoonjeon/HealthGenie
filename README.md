@@ -60,3 +60,5 @@ python .\data_pha_project_2.py
 python .\data_pha_meal.py
 python .\data_pha_health_info.py
 ```
+
+a password for all user is Jane902
