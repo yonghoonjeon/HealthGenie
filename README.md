@@ -62,3 +62,7 @@ python .\data_pha_health_info.py
 ```
 
 a password for all user is Jane902
+
+### Project detail page 
+(http://127.0.0.1:8000/pha/projects/'project_id'/)
+
