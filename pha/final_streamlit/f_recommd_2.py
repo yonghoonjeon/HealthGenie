@@ -228,33 +228,33 @@ you may have an empty list as a result if the food_list do not meet the constrai
 python f_recommd_2.py --user_id 4 --project_id 12
 '''
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description = "Generate food recommendations for a user.")
-    parser.add_argument('--user_id', type = int, required=True, help = 'User id')
-    parser.add_argument('--project_id', type = int, required = True, help = 'project id of the current user_id')
-    parser.add_argument('--n_recommd_meal', type = int, default = 1, required=False, help = 'The number of meals that user wants to get recommended')
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser(description = "Generate food recommendations for a user.")
+#     parser.add_argument('--user_id', type = int, required=True, help = 'User id')
+#     parser.add_argument('--project_id', type = int, required = True, help = 'project id of the current user_id')
+#     parser.add_argument('--n_recommd_meal', type = int, default = 1, required=False, help = 'The number of meals that user wants to get recommended')
 
-    args = parser.parse_args()
+#     args = parser.parse_args()
 
-    My_class = FoodRecommendation(args.user_id, args.project_id, args.n_recommd_meal)
+#     My_class = FoodRecommendation(args.user_id, args.project_id, args.n_recommd_meal)
 
-    result = My_class.run()
+#     result = My_class.run()
     
-    result_food_list = []
-    for food in result:
-        result_food_list.append(food[0])
+#     result_food_list = []
+#     for food in result:
+#         result_food_list.append(food[0])
 
-    conn = my_db_setting.my_db_setting()
+#     conn = my_db_setting.my_db_setting()
 
 
 
-    cur = conn.cursor()
-    result_food_tuple = tuple(result_food_list)
-    query = f""" select f_name
-                from pha_food
-                where food_id IN {result_food_tuple};"""
-    cur.execute(query)
-    result = cur.fetchall()
-    cur.close()
+#     cur = conn.cursor()
+#     result_food_tuple = tuple(result_food_list)
+#     query = f""" select f_name
+#                 from pha_food
+#                 where food_id IN {result_food_tuple};"""
+#     cur.execute(query)
+#     result = cur.fetchall()
+#     cur.close()
 
-    print(result)
+#     print(result)

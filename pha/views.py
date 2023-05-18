@@ -19,16 +19,19 @@ from PIL import Image
 from datetime import datetime
 import os
 import io
+from django.contrib.sessions.backends.db import SessionStore
+from django.db import connection
 
 # Create your views here.
 def index(request):
     return redirect('project_list')
 
+# 이거 주석처리하면 돌아가지 않음 
 def streamlit(request):
     # os.chdir('/Users/hwang/Desktop/HealthGenie/HealthGenie/pha')
     # os.system("streamlit run streamlit_app.py")
-    streamlit_app_dir = '/Users/yjhwang/HealthGenie/pha'
-    subprocess.Popen(['streamlit', 'run', 'daye_streamlit_2.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
+    streamlit_app_dir = 'C:/Users/daye/Desktop/P4DS/HealthGenie/pha'
+    subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--server.headless', 'true'], cwd=streamlit_app_dir)
     return render(request, 'pha/home.html')
 
 import base64
@@ -157,8 +160,14 @@ def login_view(request):
     """
     if request.method == 'POST':
         user = authenticate(username=request.POST['email'], password=request.POST['password'])
+        email = request.POST.get('email')
         if user:
             login(request, user)
+            #store user information in session variables 
+            # session = SessionStore(request.session.session_key)
+            # session['email'] = user.get_username()
+            request.session['email'] = email
+            # session.save() 
             return redirect(reverse("main"))
         messages.error(request, "등록되지 않은 사용자입니다.\n정보를 다시 확인해주세요")
         return HttpResponse("오류")
@@ -210,7 +219,21 @@ def project_detail(request, project_id):
     project = Project.objects.get(pk=project_id)
     streamlit_app_dir = 'C:/Users/daye/Desktop/P4DS/HealthGenie/pha/final_streamlit'
     #subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '4', '--project_id', '12', '--server.headless', 'true'], cwd=streamlit_app_dir)
-    subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '1', '--project_id', '4'], cwd=streamlit_app_dir)
+    #user_id = request.user
+
+    user_email = request.session.get('email')
+
+    with connection.cursor() as cursor:
+
+        user_query = """
+                    select user_id 
+                    from pha_user
+                    where email = %s;
+                    """
+        cursor.execute(user_query, [user_email])
+        user_data = cursor.fetchone()
+    user_id = user_data[0]
+    subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', str(user_id), '--project_id', str(project_id)], cwd=streamlit_app_dir)
 
     if request.method == 'POST':
         # try to get the uploaded file from the request
