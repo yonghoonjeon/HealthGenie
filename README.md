@@ -49,7 +49,9 @@ For food data,
 you have to import directly pha_food.csv file in staticfiles directory
 
 First, please go to data_generating directory.
-And then run the below codes line by line (it will takes some time when creating meal_time)
+And then open the my_db_setting.py file to correctly fill data for your own computer setting  
+Finally, run the below codes line by line (it will takes some time when creating meal_time)
+
 ```shell 
 python .\data_pha_user.py
 python .\data_w_tracking.py     
