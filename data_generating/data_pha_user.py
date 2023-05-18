@@ -74,7 +74,7 @@ SET date_joined = date_joined::timestamp AT TIME ZONE 'UTC' + INTERVAL '9 hours 
 cur.execute(update_date_query)
 conn.commit()
 
-last_login_update_query = f""""
+last_login_update_query = f"""
                             UPDATE pha_user
 SET last_login = last_login::timestamp AT TIME ZONE 'UTC' + INTERVAL '9 hours 30 minutes';
                             """
