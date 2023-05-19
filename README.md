@@ -61,7 +61,7 @@ python .\data_pha_meal.py
 python .\data_pha_health_info.py
 ```
 
-a password for all user is Jane902
+A password for all users is Jane902
 
 ### Project detail page 
 
@@ -85,4 +85,5 @@ ex. http://127.0.0.1:8000/pha/projects/4/
 1. streamlit pop 되지 않고 embedding하게 하는 법
 2. classify model 안돌아감
 3. email이 unique해야함 (veiw.py에서 email정보를 사용하여 user_id를 받게 됨.)
+4. streamlit UI day에서 막대그래프, 숫자 rounding등 깔끔하게 modify
 
