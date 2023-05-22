@@ -51,8 +51,8 @@ def pre_process():
     # combine all foods information into a new column: activity_lvel, goal_bmi, goal_type 
     pha_user['concat_col'] = pha_health_info['activity_level'] + ',' + pha_project['goal_bmi'].astype(str) + ',' + pha_project['goal_type']
     #print(pha_user.head(2))
-    # Construct the required TF-IDF matrix by fitting and transforming the data 
 
+    # Construct the required TF-IDF matrix by fitting and transforming the data 
     tfidf_matrix = tfidf.fit_transform(pha_user['concat_col'])  
 
     # 256 different words were used to describe the 49 foods 
@@ -64,7 +64,6 @@ def pre_process():
 
     # reverse mapping of movie titles and dataframe indices 
     # a mechanism to idenity the index of a movie in our metadata DataFrame, given its title
-
     indices = pd.Series(pha_user.index, index = pha_user['user_id']).drop_duplicates()
     return cosine_sim, indices, pha_user 
 

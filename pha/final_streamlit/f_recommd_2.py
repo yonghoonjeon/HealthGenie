@@ -59,7 +59,7 @@ class FoodRecommendation:
 
         recommendation_dic = dict()
         n_user = len(list(pha_user['user_id']))
-        for i in range(0, n_user-1):
+        for i in range(0, n_user):
             cur_user = pha_user['user_id'].iloc[i]
             # cur_user는 int 
             result = content_based_user_rec.get_recommendations(cur_user)
@@ -79,18 +79,18 @@ class FoodRecommendation:
         conn = my_db_setting.my_db_setting()
         cur = conn.cursor()
         
-#         rating_query = f"""
-#                         select temp.food_id_id, temp.user_id, temp.rating, temp.meal_time 
-# from (
-# 	select food_id_id, user_id, rating, meal_time, meals_id 
-# 	from pha_meal 
-# 	where user_id IN {similar_user_tuple} ORDER BY food_id_id, user_id, meal_time) as temp 
-# where temp.meal_time <= (select end_time from pha_project where project_id = {project_id} and user_id = {user_id}) 
-# and temp.meal_time >= (select start_time from pha_project where project_id = {project_id} and user_id = {user_id})
-# AND temp.meal_time = (select MAX(meal_time) 
-# 					  FROM pha_meal 
-# 					  WHERE food_id_id = temp.food_id_id AND user_id = temp.user_id);
-#                         """
+        #rating_query = f"""
+        #                         select temp.food_id_id, temp.user_id, temp.rating, temp.meal_time 
+        # from (
+        # 	select food_id_id, user_id, rating, meal_time, meals_id 
+        # 	from pha_meal 
+        # 	where user_id IN {similar_user_tuple} ORDER BY food_id_id, user_id, meal_time) as temp 
+        # where temp.meal_time <= (select end_time from pha_project where project_id = {project_id} and user_id = {user_id}) 
+        # and temp.meal_time >= (select start_time from pha_project where project_id = {project_id} and user_id = {user_id})
+        # AND temp.meal_time = (select MAX(meal_time) 
+        # 					  FROM pha_meal 
+        # 					  WHERE food_id_id = temp.food_id_id AND user_id = temp.user_id);
+        #                         """
         #cur.execute(rating_query, (similar_user_tuple, project_id,user_id,project_id,user_id,))
 
         
@@ -131,18 +131,18 @@ class FoodRecommendation:
         # query = "SELECT temp.food_id, temp.allergens, temp.dietary_restriction from (SELECT * FROM pha_food WHERE food_id IN %s) as temp WHERE (SELECT pha_health_info.allergy_name FROM pha_health_info WHERE user_id = %s AND update_time = (SELECT MAX(update_time) FROM pha_health_info WHERE user_id = %s)) NOT IN (SELECT unnest(string_to_array(pha_food.allergens, ',')) from pha_food WHERE food_id IN %s) AND (SELECT pha_health_info.diet_restriction FROM pha_health_info WHERE user_id = %s AND update_time = (SELECT MAX(update_time) FROM pha_health_info WHERE user_id = %s)) NOT IN (SELECT unnest(string_to_array(pha_food.dietary_restriction, ',')) from pha_food WHERE food_id IN %s);"
         query = f"""
                 SELECT temp.food_id, temp.allergen, temp.dietary_restriction 
-from 
-(SELECT * FROM pha_food WHERE food_id IN {result}) as temp 
-WHERE (SELECT pha_healthinfo.allergy_name 
-	   FROM pha_healthinfo 
-	   WHERE user_id_id = {self.user_id}
-	   AND update_time = (SELECT MAX(update_time) 
-		FROM pha_healthinfo WHERE user_id_id = {self.user_id})) NOT IN (SELECT unnest(string_to_array(pha_food.allergen, ',')) 
-	from pha_food WHERE food_id IN {result}) AND 
-	(SELECT pha_healthinfo.dietary_restriction 
-	 FROM pha_healthinfo 
-	 WHERE user_id_id = {self.user_id} AND update_time = (SELECT MAX(update_time) FROM pha_healthinfo WHERE user_id_id = {self.user_id})) NOT IN (SELECT unnest(string_to_array(pha_food.dietary_restriction, ',')) 
-	from pha_food WHERE food_id IN {result});
+                from  
+                (SELECT * FROM pha_food WHERE food_id IN {result}) as temp 
+                WHERE (SELECT pha_healthinfo.allergy_name 
+                    FROM pha_healthinfo 
+                    WHERE user_id_id = {self.user_id}
+                    AND update_time = (SELECT MAX(update_time) 
+                        FROM pha_healthinfo WHERE user_id_id = {self.user_id})) NOT IN (SELECT unnest(string_to_array(pha_food.allergen, ',')) 
+                    from pha_food WHERE food_id IN {result}) AND 
+                    (SELECT pha_healthinfo.dietary_restriction 
+                    FROM pha_healthinfo 
+                    WHERE user_id_id = {self.user_id} AND update_time = (SELECT MAX(update_time) FROM pha_healthinfo WHERE user_id_id = {self.user_id})) NOT IN (SELECT unnest(string_to_array(pha_food.dietary_restriction, ',')) 
+                    from pha_food WHERE food_id IN {result});
                 """
         cur.execute(query)
         #cur.execute(query, (result, self.user_id, self.user_id,result, self.user_id, self.user_id, result,))
@@ -155,7 +155,7 @@ WHERE (SELECT pha_healthinfo.allergy_name
 
     def svd_algorithm(self, food_rating):
         # Load the dataset
-        #data = Dataset.load_builtin('ml-100k')
+        # data = Dataset.load_builtin('ml-100k')
         reader = Reader(rating_scale=(1, 5))
         rating = pd.DataFrame(food_rating)
         rating.columns = ['food_id_id', 'user_id', 'rating', 'meal_time']
@@ -197,8 +197,13 @@ WHERE (SELECT pha_healthinfo.allergy_name
     
     def run(self):
         # 5 similar users 
+        # content based similar users (TF-IDF matrix, cosine similarity)
+        # return list ordering by similar scores 
+        # checklist : goal_bmi, goal_type, activity_level
         similar_user_list = self.get_similar_users()[0:5]
         similar_user_list.append(self.user_id)
+
+        # bring ratings for each food of similar users including current user 
         food_rating = self.get_rating_table(similar_user_list, self.project_id, self.user_id)
         #print(food_rating[0])    
         result = self.svd_algorithm(food_rating) # dictionary 
