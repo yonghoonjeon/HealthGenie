@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register_view, login_view, index, project_list, ProjectCreateView, project_detail, streamlit, classify_image, analyze
+from .views import register_view, login_view, index, project_list, ProjectCreateView, project_detail, analyze
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -9,8 +9,7 @@ urlpatterns = [
     path('projects/', project_list, name='project_list'),
     path('projects/create/', ProjectCreateView.as_view(), name='create_project'),
     path('projects/<int:project_id>/', project_detail, name='project_detail'),
-    path('streamlit/', streamlit, name='streamlit'),
-    path('classify/', classify_image, name='classify_image'),
     path('analyze/', analyze, name='analyze'),
 ]
+
 
