@@ -44,46 +44,28 @@ python manage.py createsuperuser
 (http://127.0.0.1:8000/pha/signin)
 
 ### Import data
-
 For food data,
 you have to import directly pha_food.csv file in staticfiles directory
-
-First, please go to data_generating directory.
-And then open the my_db_setting.py file to correctly fill data for your own computer setting  
+(** YOU NEED TO IMPORT pha_food.csv BEFORE RUNNING PYTHON FILES**)
+Please go to data_generating directory.
+And then open the my_db_setting.py file to correctly fill data for your own computer setting
 Finally, run the below codes line by line (it will takes some time when creating meal_time)
-
-```shell 
+```shell
 python .\data_pha_user.py
-python .\data_w_tracking.py     
+python .\data_w_tracking.py
 python .\data_pha_project_1.py
 python .\data_pha_project_2.py
 python .\data_pha_meal.py
 python .\data_pha_health_info.py
 ```
-
 A password for all users is Jane902
-
-### Project detail page 
-
-1. Go to the  HealthGenie/pha/view.py 
+### Project detail page
+1. Go to the  HealthGenie/pha/view.py
 2. you need to change a directory inside a function of project_detail(request, project_id):
-
-```python 
+   
+```python
     def project_detail(request, project_id):
-        project = Project.objects.get(pk=project_id)
-        #change directory for your own local computer 
-        streamlit_app_dir = 'C:/Users/daye/Desktop/P4DS/HealthGenie/pha/final_streamlit'
-        subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '1', '--project_id', '4'], cwd=streamlit_app_dir)
-
+    project = Project.objects.get(pk=project_id)
+    ### change directory here
+    streamlit_app_dir = 'C:/Users/daye/Desktop/P4DS/HealthGenie/pha/final_streamlit'
 ```
-(http://127.0.0.1:8000/pha/projects/'project_id'/)
-
-ex. http://127.0.0.1:8000/pha/projects/4/
-
-### To do 
-
-1. streamlit pop 되지 않고 embedding하게 하는 법
-2. classify model 안돌아감
-3. email이 unique해야함 (veiw.py에서 email정보를 사용하여 user_id를 받게 됨.)
-4. streamlit UI day에서 막대그래프, 숫자 rounding등 깔끔하게 modify
-

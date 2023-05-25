@@ -89,7 +89,7 @@ for user_id, max_update_time, project_id in zip(list_user_id, list_max_update_ti
     AT_WEIGHT = cur.fetchall()[0][0]
   
     # 프로젝트가 끝남 , 감소 목표
-    if today > end_time and goal_type == 'diet':
+    if today >= end_time and goal_type == 'diet':
         if goal_weight >= AT_WEIGHT:
        
             update_query = f"""
@@ -105,7 +105,7 @@ for user_id, max_update_time, project_id in zip(list_user_id, list_max_update_ti
             """
             
     # 프로젝트가 끝남, 증량 목표  
-    elif today > end_time and goal_type == 'putting  on  weight':
+    elif today >= end_time and goal_type == 'putting  on  weight':
         if goal_weight <= AT_WEIGHT:
             
             update_query = f"""
@@ -121,7 +121,8 @@ for user_id, max_update_time, project_id in zip(list_user_id, list_max_update_ti
             """
             
     #프로젝트가 안 끝남 
-    elif today < end_time:
+    # elif today < end_time 
+    else:
         
         update_query = f"""
                 UPDATE pha_project SET is_achieved = False 

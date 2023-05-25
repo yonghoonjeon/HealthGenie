@@ -14,16 +14,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 import psycopg2
 import csv 
+import my_db_setting
 
 def pre_process():
     #pha_user = pd.read_csv('./project_data/pha_user.csv')
     
-    conn = psycopg2.connect(
-    host = 'localhost', # find it from my_setting.spy in HealthGeinie directory
-    database = 'pha',
-    user = 'postgres',
-    password = '0847'
-    )
+    conn = my_db_setting.my_db_setting()
     cur = conn.cursor()
     food_query = f""" 
                 select *

@@ -269,8 +269,8 @@ def project_list(request):
         media_path = os.path.join(settings.MEDIA_ROOT, 'uploads', image.name)
         shutil.copyfile(image_path, media_path)
 
-        flask_url = 'http://37ce-34-170-252-194.ngrok-free.app/analyze'
-
+        #flask_url = 'http://37ce-34-170-252-194.ngrok-free.app/analyze'
+        flask_url = 'http://f344-34-90-28-57.ngrok-free.app/analyze'
         with open(image_path, 'rb') as img:
             response = requests.post(flask_url, files={'file': img})
 
@@ -320,7 +320,7 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
 def project_detail(request, project_id):
     project = Project.objects.get(pk=project_id)
-    streamlit_app_dir = 'C:/Users/hwang/HealthGenie/pha/final_streamlit'
+    streamlit_app_dir = 'C:/Users/daye/Desktop/P4DS/HealthGenie/pha/final_streamlit'
     #subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '4', '--project_id', '12', '--server.headless', 'true'], cwd=streamlit_app_dir)
     #user_id = request.user
 

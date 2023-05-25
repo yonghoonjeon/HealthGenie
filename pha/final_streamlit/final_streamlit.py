@@ -601,14 +601,12 @@ elif choose == 'Summary':
 
     ############is_achieved update 
     ################## 실제 update_weight 기준으로 DB연결해서 해서 is_achieved 상태 update 필요 
-    user_id = args.user_id
-    project_id = args.project_id
 
 
     project_query = f"""
                     select end_time, goal_type, goal_weight
                     from pha_project
-                    where user_id = {user_id} and project_id = {project_id};
+                    where user_id = {args.user_id} and project_id = {args.project_id};
                     """
     cur.execute(project_query)
     project_info = cur.fetchall()
@@ -619,7 +617,7 @@ elif choose == 'Summary':
     weight_query = f"""
                     select cur_weight 
                     from pha_tracking 
-                    where user_id = {user_id} and update_time = '{max_update_time}';
+                    where user_id = {args.user_id} and update_time = '{max_update_time}';
                     """
     cur.execute(weight_query)
     AT_WEIGHT = cur.fetchall()[0][0]
@@ -629,35 +627,35 @@ elif choose == 'Summary':
         if goal_weight >= AT_WEIGHT:
             update_query = f"""
                 UPDATE pha_project SET is_achieved = True 
-                WHERE pha_project.project_id = {project_id} 
-            """
+                WHERE pha_project.project_id = {args.project_id} 
+                """
             
         else:
             update_query = f"""
                 UPDATE pha_project SET is_achieved = False 
-                WHERE pha_project.project_id = {project_id}
-            """
+                WHERE pha_project.project_id = {args.project_id}
+                """
                 
     # 프로젝트가 끝남, 증량 목표  
     elif today >= end_time and goal_type == 'putting  on  weight':
         if goal_weight <= AT_WEIGHT:
             update_query = f"""
                 UPDATE pha_project SET is_achieved = True
-                WHERE pha_project.project_id = {project_id}
-            """
+                WHERE pha_project.project_id = {args.project_id}
+                """
             
         else:
             update_query = f"""
                 UPDATE pha_project SET is_achieved = False 
-                WHERE pha_project.project_id = {project_id}
-            """
+                WHERE pha_project.project_id = {args.project_id}
+                """
             
     #프로젝트 'ing'
-    elif today < end_time:
+    else:
         update_query = f"""
                 UPDATE pha_project SET is_achieved = False 
-                WHERE pha_project.project_id = {project_id}
-            """
+                WHERE pha_project.project_id = {args.project_id}
+                """
 
     cur.execute(update_query)
     conn.commit()
@@ -665,7 +663,7 @@ elif choose == 'Summary':
     is_achieved_query = f"""
                 select is_achieved 
                 from pha_project
-                where project_id = {project_id}
+                where project_id = {args.project_id}
                 """
     cur.execute(is_achieved_query)
     status_cur_is_achieved = cur.fetchall()[0][0]

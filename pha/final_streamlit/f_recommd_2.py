@@ -190,7 +190,7 @@ class FoodRecommendation:
             # Sort the items by their predicted ratings
             sorted_items = sorted(unrated_items_with_ratings, key=lambda x: x[1], reverse=True)
             # Get the top recommended items for the user
-            top_items = [item_id for item_id, rating in sorted_items[:10]]
+            top_items = [item_id for item_id, rating in sorted_items[:5]]
             # Add the top recommended items to the dictionary
             top_recs[user_id] = top_items
         return top_recs
