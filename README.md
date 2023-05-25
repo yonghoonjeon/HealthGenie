@@ -44,11 +44,14 @@ python manage.py createsuperuser
 (http://127.0.0.1:8000/pha/signin)
 
 ### Import data
+\
 For food data,
 you have to import directly pha_food.csv file in staticfiles directory
-(** YOU NEED TO IMPORT pha_food.csv BEFORE RUNNING PYTHON FILES**)
+(**YOU NEED TO IMPORT pha_food.csv BEFORE RUNNING PYTHON FILES**)
+
 Please go to data_generating directory.
 And then open the my_db_setting.py file to correctly fill data for your own computer setting
+
 Finally, run the below codes line by line (it will takes some time when creating meal_time)
 ```shell
 python .\data_pha_user.py
