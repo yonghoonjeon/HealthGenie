@@ -32,6 +32,18 @@ then run server.
 ```shell
 python manage.py runserver
 ```
+
+for other portable devices such as phone, IPAD, and etc.
+```shell
+python manage.py runserver 0.0.0.0:8000 
+``` 
+\
+To connect to the url on the phone or IPAD
+1. First, you need to connect to the same WIFI as your notebook is connecting to 
+2. Secondly, write the wifi_address:0808/pha/ 
+   - for example, 192.168.68.53:0808/pha/signin
+
+
 ### Create admin user account
 You can access the django admin page at **http://127.0.0.1:8000/admin/** and login with username 'admin' and the above password.
 Also a new admin user can be created using
