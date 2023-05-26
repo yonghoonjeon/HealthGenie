@@ -74,7 +74,7 @@ class FoodRecommendation:
     
     # rating table = food_id, user_id, rating, meal_time (latest update time)
     # need to get the project_id and user_id 
-    def get_rating_table(self, similar_user_list, project_id, user_id):
+    def get_rating_table(self, similar_user_list):
         similar_user_tuple = tuple(similar_user_list)
         conn = my_db_setting.my_db_setting()
         cur = conn.cursor()
@@ -204,7 +204,7 @@ class FoodRecommendation:
         similar_user_list.append(self.user_id)
 
         # bring ratings for each food of similar users including current user 
-        food_rating = self.get_rating_table(similar_user_list, self.project_id, self.user_id)
+        food_rating = self.get_rating_table(similar_user_list)
         #print(food_rating[0])    
         result = self.svd_algorithm(food_rating) # dictionary 
         result = result[self.user_id]
