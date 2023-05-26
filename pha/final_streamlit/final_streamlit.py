@@ -300,19 +300,19 @@ if choose == "Weight":
             st.plotly_chart(fig)
 
     st.divider()
-    last_weight = round(weight_tracking['cur_weight'].iloc[-1], 2)
-    #goal_weight = round(weight_tracking['goal_weight'].iloc[0], 2)
-    goal_w_query = f"""
-                    select goal_weight
-                    from pha_project 
-                    where user_id = {args.user_id} and project_id = {args.project_id}
-                    """
-    cur.execute(goal_w_query)
-    goal_weight= cur.fetchall()[0][0]
-    # 수정
-    change_weight = round(last_weight - goal_weight, 2)
-    weight_value = f"{last_weight} kg"
-    st.metric(label="Current weight compared to goal weight", value= weight_value , delta= change_weight)
+    # last_weight = round(weight_tracking['cur_weight'].iloc[-1], 2)
+    # #goal_weight = round(weight_tracking['goal_weight'].iloc[0], 2)
+    # goal_w_query = f"""
+    #                 select goal_weight
+    #                 from pha_project 
+    #                 where user_id = {args.user_id} and project_id = {args.project_id}
+    #                 """
+    # cur.execute(goal_w_query)
+    # goal_weight= cur.fetchall()[0][0]
+    # # 수정
+    # change_weight = round(last_weight - goal_weight, 2)
+    # weight_value = f"{last_weight} kg"
+    # st.metric(label="Current weight compared to goal weight", value= weight_value , delta= change_weight)
 
 ################################################## Calorie Tracking ##################################################
 # calorie tracking
@@ -646,12 +646,12 @@ elif choose == 'Calorie':
 
     st.divider()
 
-    last_intake = new_calories_intake['result_calories'].iloc[-1]
-    round_intake = round(last_intake, 2)
-    # 수정
-    delta_intake = round(round_intake - rec_tot_calories, 2)
-    calorie_val = f"{round_intake} kcal"
-    st.metric(label="Calories consumed today compared to recommended intake", value= calorie_val, delta= delta_intake)
+    # last_intake = new_calories_intake['result_calories'].iloc[-1]
+    # round_intake = round(last_intake, 2)
+    # # 수정
+    # delta_intake = round(round_intake - rec_tot_calories, 2)
+    # calorie_val = f"{round_intake} kcal"
+    # st.metric(label="Calories consumed today compared to recommended intake", value= calorie_val, delta= delta_intake)
 
 ################################################## Meal Recommendation ##################################################
 
@@ -894,7 +894,7 @@ elif choose == "Current status":
         #st.metric(label="Weight", value= cur_weight, delta= change_weight)
         # st.metric(label="Current Weight", value= cur_weight)
 
-        st.metric(label="Current Weight", value= value1)
+        st.metric(label="**Current Weight**", value= value1)
         # st.write(f"""
         #         Current weight and today's calories consumption
         #         """)
