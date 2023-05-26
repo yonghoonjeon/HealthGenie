@@ -42,7 +42,7 @@ def generate_dates(start_date):
     current_date = start_date
 
     # Generate dates for one year
-    for _ in range(365 + 30*5):
+    for _ in range(365 + 25*5):
         #cur_time = current_date.strftime('%Y-%m-%d %H:%M:%S')
         
         rhour = random.randrange(7, 24)    
