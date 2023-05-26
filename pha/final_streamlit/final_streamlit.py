@@ -6,7 +6,6 @@ from streamlit_option_menu import option_menu
 import plotly.express as px
 import plotly.graph_objs as go
 import pandas as pd
-import numpy as np
 import my_db_setting
 
 # date
@@ -73,12 +72,12 @@ with st.sidebar:
 today = datetime.datetime.now()
 
 query = f"""select user_name, p_name, start_time, end_time, goal_weight, cur_weight, goal_bmi, goal_type
-from
-(SELECT user_id,p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_bmi, goal_type
-FROM pha_project
-WHERE user_id = {args.user_id} and project_id ={args.project_id}) as temp
-join pha_user on temp.user_id =pha_user.user_id;"""
-        
+            from
+            (SELECT user_id,p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_bmi, goal_type
+            FROM pha_project
+            WHERE user_id = {args.user_id} and project_id ={args.project_id}) as temp
+            join pha_user on temp.user_id =pha_user.user_id;"""
+                    
 cur = conn.cursor()
 cur.execute(query)
 project_info = cur.fetchall()
@@ -89,13 +88,8 @@ df_project_info = pd.DataFrame(data= project_info, columns=['user_name', 'p_name
 start_time = df_project_info['start_time'].values[0]
 end_time = df_project_info['end_time'].values[0]
 
-# summary_user = df_project_info['user'].values[0]
-# summary_project_name = df_project_info['p_name'].values[0]
-# summary_goal_weight = df_project_info['goal_weight'].values[0]
-# summary_goal_bmi = df_project_info['goal_bmi'].values[0]
-# summary_start_time = df_project_info['start_time'].values[0]
-# summary_end_time = df_project_info['end_time'].values[0]
-
+# start_time = project_info[0][2]
+# end_time = project_info[0][3]
 
 
 start_time =time.mktime(time.strptime(start_time[:-3], '%Y-%m-%d %H:%M:%S'))
@@ -647,13 +641,25 @@ elif choose == 'Diet':
 
 elif choose == 'Summary':
     st.divider()
+
+    query = f"""select user_name, p_name, start_time, end_time, goal_weight, cur_weight, goal_bmi, goal_type
+                from
+                (SELECT user_id,p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_bmi, goal_type
+                FROM pha_project
+                WHERE user_id = {args.user_id} and project_id ={args.project_id}) as temp
+                join pha_user on temp.user_id =pha_user.user_id;"""
+        
+    cur = conn.cursor()
+    cur.execute(query)
+    project_info = cur.fetchall()
     
-    summary_user = df_project_info['user_name'].values[0]
-    summary_project_name = df_project_info['p_name'].values[0]
-    summary_goal_weight = round(df_project_info['goal_weight'].values[0], 2)
-    summary_goal_bmi = df_project_info['goal_bmi'].values[0]
-    summary_start_time = df_project_info['start_time'].values[0]
-    summary_end_time = df_project_info['end_time'].values[0]
+    summary_user = project_info[0][0]
+    summary_project_name = project_info[0][1]
+    summary_start_time = project_info[0][2]
+    summary_end_time = project_info[0][3]
+    summary_goal_weight = round(project_info[0][4], 2)
+    summary_goal_bmi = project_info[0][6]
+    
 
     # st.write('User : ', summary_user)
     # st.write('Project Name : ', summary_project_name)

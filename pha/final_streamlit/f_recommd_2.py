@@ -114,8 +114,8 @@ class FoodRecommendation:
                 select food_id_id, user_id, rating, meal_time, meals_id 
                 from pha_meal 
                 where user_id IN {similar_user_tuple} ORDER BY food_id_id, user_id, meal_time) as temp 
-                where temp.meal_time BETWEEN ((select end_time from pha_project where project_id = 4 and user_id =1) - INTERVAL '7' DAY)
-								AND (select end_time from pha_project where project_id = 4 and user_id =1);
+                where temp.meal_time BETWEEN ((select end_time from pha_project where project_id = {self.project_id} and user_id ={self.user_id}) - INTERVAL '7' DAY)
+								AND (select end_time from pha_project where project_id = {self.project_id} and user_id ={self.user_id});
                 """
         cur.execute(rating_query)
         result = cur.fetchall()
