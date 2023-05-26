@@ -114,68 +114,71 @@ for user_id, joined_time in zip(list_user_id, list_joined_time):
     start = str(joined_time)
     list_dates = generate_dates(start)
 
-    for date_idx, date in enumerate(list_dates):
-        for meal_type in meal_type_list:
-            # food_id, rating 
-            store_food_idx = [] # reset 
-            how_many_food_in_a_meal = random.randint(0, 4)
-            for k in range(how_many_food_in_a_meal):
-                if k == 0:
+    for date_idx, date in enumerate(list_dates): # date, hour, minute, second 
+        #meal_type 
+        meal_type_idx = random.randint(0, 3)
+        meal_type = meal_type_list[meal_type_idx]
+
+        # food_id, rating 
+        store_food_idx = [] # reset 
+        how_many_food_in_a_meal = random.randint(0, 4)
+        for k in range(how_many_food_in_a_meal):
+            if k == 0:
+                new_food_idx = random.randint(0, len_food-1)
+            else:
+                while new_food_idx in store_food_idx: 
                     new_food_idx = random.randint(0, len_food-1)
+            food_idx = new_food_idx 
+            store_food_idx.append(food_idx) # no same food in the meal 
+        
+        # food_id 
+        # randomly pick index for picking one row in recommendation_list 
+        random_rec_idx = random.randint(0, len_food-1)
+        food_list = recommendation_list[random_rec_idx]
+        if len(food_list) == len_food:
+            for food_idx in store_food_idx: # how_many_food_in_a_meal 
+                food_name = food_list[food_idx]
+                filtered_df = df_food[df_food['f_name'] == food_name]
+                food_id = filtered_df['food_id'].iloc[0]
+
+                # 0 = didn't rate 
+                if 1 <= food_list.index(food_name) < len_food/5:
+                    rating_list = [0, 4, 5]
+                    rating_idx = random.randrange(0, 3)
+                    rating = rating_list[rating_idx]
+                elif len_food/5 <= food_list.index(food_name) < len_food*2/5:
+                    rating_list = [0, 3, 4]
+                    rating_idx = random.randrange(0, 3)
+                    rating = rating_list[rating_idx] 
+                elif len_food*2/5 <= food_list.index(food_name) < len_food * 4/5:
+                    rating_list = [0, 2, 3]
+                    rating_idx = random.randrange(0, 3)
+                    rating = rating_list[rating_idx]
                 else:
-                    while new_food_idx in store_food_idx: 
-                        new_food_idx = random.randint(0, len_food-1)
-                food_idx = new_food_idx 
-                store_food_idx.append(food_idx) # no same food in the meal 
-            
-            # food_id 
-            # randomly pick index for picking one row in recommendation_list 
-            random_rec_idx = random.randint(0, len_food-1)
-            food_list = recommendation_list[random_rec_idx]
-            if len(food_list) == len_food:
-                for food_idx in store_food_idx: # how_many_food_in_a_meal 
-                    food_name = food_list[food_idx]
-                    filtered_df = df_food[df_food['f_name'] == food_name]
-                    food_id = filtered_df['food_id'].iloc[0]
+                    rating_list = [0, 1, 2]
+                    rating_idx = random.randrange(0, 3)
+                    rating = rating_list[rating_idx]
+                
 
-                    # 0 = didn't rate 
-                    if 1 <= food_list.index(food_name) < len_food/5:
-                        rating_list = [0, 4, 5]
-                        rating_idx = random.randrange(0, 3)
-                        rating = rating_list[rating_idx]
-                    elif len_food/5 <= food_list.index(food_name) < len_food*2/5:
-                        rating_list = [0, 3, 4]
-                        rating_idx = random.randrange(0, 3)
-                        rating = rating_list[rating_idx] 
-                    elif len_food*2/5 <= food_list.index(food_name) < len_food * 4/5:
-                        rating_list = [0, 2, 3]
-                        rating_idx = random.randrange(0, 3)
-                        rating = rating_list[rating_idx]
-                    else:
-                        rating_list = [0, 1, 2]
-                        rating_idx = random.randrange(0, 3)
-                        rating = rating_list[rating_idx]
-                    
+                # serving size 
+                size_idx = random.randrange(0, len(list_serving_size))
+                serving_size = list_serving_size[size_idx]
 
-                    # serving size 
-                    size_idx = random.randrange(0, len(list_serving_size))
-                    serving_size = list_serving_size[size_idx]
-
-                    ################query_append 
-                    query_list.append((meal_id, str(date), meal_type, serving_size, rating, food_id, user_id))
-                    meal_id += 1
-                    # if date_idx < len(list_dates):
-                    #    query_list.append(',')
-            else: # food_idx = 0, 23 
-                #meal_id, meal_time, meal_type, user_id는 그대로 
-                food_id = 23 
-                rating = 3 
-                serving_size = 100 
+                ################query_append 
                 query_list.append((meal_id, str(date), meal_type, serving_size, rating, food_id, user_id))
                 meal_id += 1
-                
                 # if date_idx < len(list_dates):
                 #    query_list.append(',')
+        else: # food_idx = 0, 23 
+            #meal_id, meal_time, meal_type, user_id는 그대로 
+            food_id = 23 
+            rating = 3 
+            serving_size = 100 
+            query_list.append((meal_id, str(date), meal_type, serving_size, rating, food_id, user_id))
+            meal_id += 1
+            
+            # if date_idx < len(list_dates):
+            #    query_list.append(',')
 for result_query in query_list:
     insert_query = f"""
     insert into pha_meal (meals_id, meal_time, meal_type, serving_size, rating, food_id_id, user_id)

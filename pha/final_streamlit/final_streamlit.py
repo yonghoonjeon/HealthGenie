@@ -54,10 +54,11 @@ st.markdown('<h2 style="font-family: Georgia, monospace;">Data-based personalize
              
 ################################################## Sidebar ##################################################
 
+# https://icons.getbootstrap.com/
 with st.sidebar:
-    choose = option_menu("Your Report", ["Current status", "Summary", "Weight", "Calorie", "Diet"],
-                         icons=['chat-right-text', 'speedometer', 'clipboard-data', 'hand-thumbs-up'],
-                         menu_icon="person-workspace", default_index=0,
+    choose = option_menu("Your Report", ["Summary", "Current status",  "Weight", "Calorie", "Recommendation"],
+                         icons=['chat-right-text', 'clipboard-data', 'speedometer', 'droplet-half', 'hand-thumbs-up'],
+                         menu_icon="person-vcard", default_index=0,
                          styles={
         "container": {"padding": "5!important", "background-color": "#fafafa"},
         "icon": {"color": "#FA4C4B", "font-size": "25px"}, 
@@ -66,7 +67,7 @@ with st.sidebar:
     }
     )
 
-################################################## Select Project ##################################################
+##################################################Project Info ##################################################
 
 # 오늘 날짜 받아오기
 today = datetime.datetime.now()
@@ -95,7 +96,7 @@ end_time = df_project_info['end_time'].values[0]
 start_time =time.mktime(time.strptime(start_time[:-3], '%Y-%m-%d %H:%M:%S'))
 end_time =time.mktime(time.strptime(end_time[:-3], '%Y-%m-%d %H:%M:%S'))
 
-# 이미 완료된 project인지 진행 중인 project인지 판단 
+# 종료된 project인지 진행 중인 project인지 판단 
 start_time = datetime.datetime.fromtimestamp(start_time)
 end_time = datetime.datetime.fromtimestamp(end_time)
 
@@ -113,7 +114,7 @@ if choose == "Weight":
     with col1:
     # period_selectbox
         weight_period = st.radio(
-            'Select the period',
+             '**Select the period**',
             ('Day','Week', 'Month', 'Year', 'Total'), 
             index=1
         )
@@ -122,13 +123,6 @@ if choose == "Weight":
         # period별 쿼리
         if project_status == 'ing':
             if weight_period == 'day':
-                # query = f"""SELECT update_time, pha_project.cur_weight, goal_weight
-                #             from pha_project 
-                #             join pha_user ON pha_user.user_id= pha_project.user_id
-                #             JOIN pha_tracking ON pha_user.user_id= pha_tracking.user_id
-                #             where pha_user.user_id= '{args.user_id}' and project_id = '{args.project_id}' and DATE(update_time) = DATE(NOW())
-                #             order by update_time asc;
-                #         """
                 query = f"""
                         select update_time, cur_weight, user_id
                         from pha_tracking
@@ -203,31 +197,70 @@ if choose == "Weight":
             elif weight_period == 'Week':
                 query = f"""select update_time, cur_weight, user_id
                         from pha_tracking
-                        where user_id = {args.user_id} and DATE(update_time) BETWEEN DATE((SELECT end_time::text
+                        where user_id = {args.user_id}  and DATE(update_time) BETWEEN 
+                                                CASE 
+                                                WHEN DATE((SELECT end_time
             									FROM pha_project
-            									WHERE user_id = {args.user_id} and project_id = {args.project_id})) - INTERVAL '7' DAY AND DATE((SELECT end_time::text
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id}) - INTERVAL '7' day) < DATE((SELECT start_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id})) THEN DATE((SELECT start_time::text
             									FROM pha_project
             									WHERE user_id = {args.user_id} and project_id = {args.project_id}))
+                                                ELSE 
+                                                DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id ={args.project_id})) - INTERVAL '7' day 
+												END 
+												AND DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id ={args.user_id} and project_id = {args.project_id}))
+                                   
                             order by update_time asc;
                         """
             elif weight_period == 'Month':
                 query = f"""select update_time, cur_weight, user_id
                         from pha_tracking
-                        where user_id = {args.user_id} and DATE(update_time) BETWEEN DATE((SELECT end_time::text
+                        where user_id = {args.user_id}  and DATE(update_time) BETWEEN 
+                                                CASE 
+                                                WHEN DATE((SELECT end_time
             									FROM pha_project
-            									WHERE user_id = {args.user_id} and project_id = {args.project_id})) - INTERVAL '1'month AND DATE((SELECT end_time::text
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id}) - INTERVAL '1' month) < DATE((SELECT start_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id})) THEN DATE((SELECT start_time::text
             									FROM pha_project
             									WHERE user_id = {args.user_id} and project_id = {args.project_id}))
+                                                ELSE 
+                                                DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id ={args.project_id})) - INTERVAL '1' month 
+												END 
+												AND DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id ={args.user_id} and project_id = {args.project_id}))
+                                   
                             order by update_time asc;
                         """
             elif weight_period == 'Year':
                 query = f"""select update_time, cur_weight, user_id
                         from pha_tracking
-                        where user_id = {args.user_id} and DATE(update_time) BETWEEN DATE((SELECT end_time::text
+                        where user_id = {args.user_id}  and DATE(update_time) BETWEEN 
+                                                CASE 
+                                                WHEN DATE((SELECT end_time
             									FROM pha_project
-            									WHERE user_id = {args.user_id} and project_id = {args.project_id})) - INTERVAL '1' year AND DATE((SELECT end_time::text
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id}) - INTERVAL '1' year) < DATE((SELECT start_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id})) THEN DATE((SELECT start_time::text
             									FROM pha_project
             									WHERE user_id = {args.user_id} and project_id = {args.project_id}))
+                                                ELSE 
+                                                DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id ={args.project_id})) - INTERVAL '1' year 
+												END 
+												AND DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id ={args.user_id} and project_id = {args.project_id}))
+                                   
                             order by update_time asc;
                         """
             else: # weight_period == 'total'
@@ -251,13 +284,20 @@ if choose == "Weight":
         n = len(weight_tracking['cur_weight'])
 
             
-        # # 데이터 시각화     
-        fig = px.line(weight_tracking, x= 'update_time', y= 'cur_weight')
-        fig.update_layout(title='📈 Weight Tracking per ' + weight_period.capitalize())
-        fig.update_xaxes(title_text='Update Time')
-        fig.update_yaxes(title_text='Your Weight')
+        # # 데이터 시각화    
+        if weight_period == "Day":
+            fig = px.bar(weight_tracking, x= 'update_time', y= 'cur_weight')
+            fig.update_layout(title='📈 Weight Tracking per ' + weight_period.capitalize())
+            fig.update_xaxes(title_text='Update Time')
+            fig.update_yaxes(title_text='Your Weight')
+            st.plotly_chart(fig)
+        else:
+            fig = px.line(weight_tracking, x= 'update_time', y= 'cur_weight')
+            fig.update_layout(title='📈 Weight Tracking per ' + weight_period.capitalize())
+            fig.update_xaxes(title_text='Update Time')
+            fig.update_yaxes(title_text='Your Weight')
 
-        st.plotly_chart(fig)
+            st.plotly_chart(fig)
 
     st.divider()
     last_weight = round(weight_tracking['cur_weight'].iloc[-1], 2)
@@ -271,7 +311,7 @@ if choose == "Weight":
     goal_weight= cur.fetchall()[0][0]
     change_weight = last_weight - goal_weight
 
-    st.metric(label="Weight", value= last_weight, delta= change_weight)
+    st.metric(label="Achievement for this project: Weight", value= last_weight, delta= change_weight)
 
 ################################################## Calorie Tracking ##################################################
 # calorie tracking
@@ -282,7 +322,7 @@ elif choose == 'Calorie':
     # (1) project 기간동안 섭취한 누적 칼로리
     with col1:
         calorie_period = st.radio(
-            'Select the period',
+            '**Select the period**',
             ('Day','Week', 'Month', 'Year', 'Total'), 
             index=1
         )
@@ -290,9 +330,10 @@ elif choose == 'Calorie':
         # period별 쿼리
         if project_status == 'ended':
             if calorie_period == 'Day':
-                query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
+                # not apply DATE() function to the meal_time for only 'Day' calorie_period 
+                query = f"""SELECT meal_type, food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
                             FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
+                            (SELECT meal_type, temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
                             FROM 
                                 (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
                                 FROM pha_project
@@ -300,12 +341,12 @@ elif choose == 'Calorie':
                             JOIN pha_meal ON pha_meal.user_id = temp.user_id 
                             WHERE DATE(pha_meal.meal_time) = DATE(end_time)) AS food_table 
                             JOIN pha_food ON pha_food.food_id = food_table.food_id_id
-                            order by meal_time asc;"""
-                
+                            order by food_table.meal_time asc ;"""
+                                
             elif calorie_period == 'Week':
-                query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
+                query = f"""SELECT meal_type, food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, DATE(food_table.update_time) as meal_time, food_table.end_time, food_table.start_time
                             FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
+                            (SELECT meal_type, temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
                             FROM 
                                 (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
                                 FROM pha_project
@@ -321,9 +362,9 @@ elif choose == 'Calorie':
                             order by meal_time asc;"""
 
             elif calorie_period == 'Month':
-                query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
+                query = f"""SELECT meal_type, food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, DATE(food_table.update_time) as meal_time, food_table.end_time, food_table.start_time
                             FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
+                            (SELECT meal_type, temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
                             FROM 
                                 (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
                                 FROM pha_project
@@ -340,9 +381,9 @@ elif choose == 'Calorie':
 
             elif calorie_period == 'Year':
                 # if the start time is before the one year ago, you may get the results starting from start_time 
-                query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
+                query = f"""SELECT meal_type,  food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, DATE(food_table.update_time) as meal_time, food_table.end_time, food_table.start_time
                             FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
+                            (SELECT meal_type, temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
                             FROM 
                                 (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
                                 FROM pha_project
@@ -358,9 +399,9 @@ elif choose == 'Calorie':
                             order by meal_time asc;"""
                     
             else: # calorie_period == 'total'
-                query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
+                query = f"""SELECT meal_type, food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, DATE(food_table.update_time) as meal_time, food_table.end_time, food_table.start_time
                             FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
+                            (SELECT meal_type, temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
                             FROM 
                                 (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
                                 FROM pha_project
@@ -372,10 +413,11 @@ elif choose == 'Calorie':
                             """
 
         else: # project_status == 'ing'
+            # not apply DATE() function to the meal_time for only 'Day' calorie_period 
             if calorie_period == 'Day':
-                query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
+                query = f"""SELECT meal_type, food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
                             FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
+                            (SELECT meal_type, temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
                             FROM 
                                 (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
                                 FROM pha_project
@@ -386,9 +428,9 @@ elif choose == 'Calorie':
                             order by meal_time asc;"""
 
             elif calorie_period == 'Week':
-                query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
+                query = f"""SELECT meal_type,food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, DATE(food_table.update_time) as meal_time, food_table.end_time, food_table.start_time
                             FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
+                            (SELECT meal_type,temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
                             FROM 
                                 (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
                                 FROM pha_project
@@ -405,9 +447,9 @@ elif choose == 'Calorie':
                             order by meal_time asc;"""
 
             elif calorie_period == 'Month':
-                query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
+                query = f"""SELECT meal_type,food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, DATE(food_table.update_time) as meal_time, food_table.end_time, food_table.start_time
                             FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
+                            (SELECT meal_type,temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
                             FROM 
                                 (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
                                 FROM pha_project
@@ -424,9 +466,9 @@ elif choose == 'Calorie':
                             order by meal_time asc;"""
                     
             elif calorie_period == 'Year':
-                query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
+                query = f"""SELECT meal_type,food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, DATE(food_table.update_time) as meal_time, food_table.end_time, food_table.start_time
                             FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
+                            (SELECT meal_type,temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
                             FROM 
                                 (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
                                 FROM pha_project
@@ -443,9 +485,9 @@ elif choose == 'Calorie':
                             order by meal_time asc;"""
                     
             else: # calorie_period == 'total'
-                query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
+                query = f"""SELECT meal_type,food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, DATE(food_table.update_time) as meal_time, food_table.end_time, food_table.start_time
                             FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
+                            (SELECT meal_type,temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
                             FROM 
                                 (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
                                 FROM pha_project
@@ -454,18 +496,16 @@ elif choose == 'Calorie':
                             WHERE DATE(pha_meal.meal_time) BETWEEN DATE(temp.start_time) AND CURRENT_DATE) AS food_table 
                             JOIN pha_food ON pha_food.food_id = food_table.food_id_id
                             order by meal_time asc;"""
-                            
-                
+                             
         # 데이터베이스에서 데이터 추출
         cur = conn.cursor()
         cur.execute(query)
         data = cur.fetchall()
-        df_calories_intake = pd.DataFrame(data, columns=['meal_id', 'food_id', 'calories', 'protein', 'fat', 'carbs', 'serving_size', 'meal_time', 'end_time', 'start_time'])
+        df_calories_intake = pd.DataFrame(data, columns=['meal_type','meal_id', 'food_id', 'calories', 'protein', 'fat', 'carbs', 'serving_size', 'meal_time', 'end_time', 'start_time'])
 
 
         # considering serving size that user 
-
-        new_calories_intake = df_calories_intake[['calories', 'fat','protein','carbs','meal_time', 'serving_size']].copy()
+        new_calories_intake = df_calories_intake[['calories', 'fat','protein','carbs','meal_time', 'serving_size', 'meal_type']].copy()
 
         new_calories_intake['result_calories'] = new_calories_intake['calories'] * (new_calories_intake['serving_size'] / 100)
         new_calories_intake['restult_fat'] = new_calories_intake['fat'] * (new_calories_intake['serving_size']/100)
@@ -474,7 +514,7 @@ elif choose == 'Calorie':
 
     # bar graph 그리기
     with col2:
-        fig = px.bar(new_calories_intake, x='meal_time', y='result_calories')
+        fig = px.bar(new_calories_intake, x='meal_time', y='result_calories', color='meal_type')
         fig.update_layout(title='📊 Calorie Tracking per ' + calorie_period.capitalize())
         fig.update_xaxes(title_text='Meal Time')
         fig.update_yaxes(title_text='Calories Consumed')
@@ -510,11 +550,7 @@ elif choose == 'Calorie':
         fat = 0 
         calories = 0
         # 확인 
-        st.markdown(
-        "For this meal, you consumed **{} kcal from carbs, {} kcal from protein, and {} kcal from fat. Total calories are {} kcal.**".format(
-            carbs, protein, fat, calories
-        )
-    )
+        st.markdown("**No calories consumed today.**")
     else: 
         # 오늘 칼로리 계산 
         new_today_intake = df[['calories', 'fat','protein','carbs','meal_time', 'serving_size']].copy()
@@ -602,40 +638,43 @@ elif choose == 'Calorie':
                 round_carbs, round_protein, round_fat, round_calories
             )
         )
-    st.divider()
+    # st.divider()
 
-    last_intake = new_calories_intake['result_calories'].iloc[-1]
-    round_intake = round(last_intake, 2)
+    # last_intake = new_calories_intake['result_calories'].iloc[-1]
+    # round_intake = round(last_intake, 2)
 
-    weight = round_intake - rec_tot_calories
+    # weight = round_intake - rec_tot_calories
 
-    st.metric(label="Calories", value= round_intake, delta= weight)
+    # st.metric(label="Calories", value= round_intake, delta= weight)
 
 ################################################## Meal Recommendation ##################################################
 
-elif choose == 'Diet':
+elif choose == 'Recommendation':
     st.divider()
-    # 실행 버튼
-    if st.button('Get food recommendations'):
-        
-        #you may have an empty list as a result if the food_list do not meet the constraints of 4 in readme.md
-        #python f_recommd_2.py --user_id 4 --project_id 12
-        
+ 
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        # 실행 버튼
+        if st.button('Get food recommendations'):
+            # you may have an empty list as a result if the food_list do not meet the constraints of 4 in readme.md
+            # python f_recommd_2.py --user_id 4 --project_id 12
 
-        # FoodRecommendation.run() 실행
-        My_class = FoodRecommendation(args.user_id, args.project_id, args.n_recommd_meal)
-        result = My_class.run()
+            # FoodRecommendation.run() 실행
+            My_class = FoodRecommendation(args.user_id, args.project_id, args.n_recommd_meal)
+            result = My_class.run()
+    
+            with col2:
+                # 결과 출력
+                statements = f"""**You have total '{len(result)}' recommendations for today.**"""
+                st.write(statements)
 
-        # 결과 출력
+                # 결과를 데이터프레임으로 변환
+                data = {"Recommended Food": [i[0] for i in result]}
+                df = pd.DataFrame(data)
+                df.index = df.index + 1
 
-        statements = f"""You have total '{len(result)}' recommendations for today. The food names are """
-        for  idx, i in enumerate(result):
-            statements += str(i[0])
-            if idx == len(result)-1:
-                break
-            else:
-                statements += " and "
-        st.write(statements)
+                # 데이터프레임 출력
+                st.write(df)
 
 ################################################## Summary ##################################################
 
@@ -772,11 +811,19 @@ elif choose == 'Summary':
     status_cur_is_achieved = cur.fetchall()[0][0]
 
     # st.write('Project Status : ', status_cur_is_achieved)
-    st.write('<span style="font-size: 20px;"><b>Project Status :</b> {}</span>'.format(status_cur_is_achieved), unsafe_allow_html=True)
-    st.divider()
+    # st.write('<span style="font-size: 20px;"><b>Project Status :</b> {}</span>'.format(status_cur_is_achieved), unsafe_allow_html=True)
+    if status_cur_is_achieved == 0:
+        # st.write('<span style="font-size: 20px; color: red;"><b>Project Status :</b> {}</span>'.format(status_cur_is_achieved), unsafe_allow_html=True)
+        status_text = '<span style="font-size: 20px;"><b>Project Status :</b></span> <span style="font-size: 20px; color: red;">{}</span>'.format(status_cur_is_achieved)
+        st.write(status_text, unsafe_allow_html=True)
 
+    else:
+        status_text = '<span style="font-size: 20px;"><b>Project Status :</b></span> <span style="font-size: 20px; color: green;">{}</span>'.format(status_cur_is_achieved)
+        st.write(status_text, unsafe_allow_html=True)
+
+################## Current status #################################### 
 elif choose == "Current status":
-    ################## current status metric #################################### 
+    st.divider()
 
     col1, col2 = st.columns(2)
     # Weight
@@ -855,12 +902,9 @@ elif choose == "Current status":
             protein = 0
             fat = 0 
             calories = 0
-            # 확인 필요
-            st.markdown(
-            "For this meal, you consumed **{} kcal from carbs, {} kcal from protein, and {} kcal from fat. Total calories are {} kcal.**".format(
-                carbs, protein, fat, calories
-            )
-        )
+            
+            st.markdown("**No calories consumed today.**")
+        
         else: 
             
             ## 오늘 칼로리 계산 
