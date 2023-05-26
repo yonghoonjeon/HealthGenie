@@ -49,7 +49,7 @@ st.markdown('<h1 style="font-family: Georgia, sans-serif; font-size: 48px; font-
 # st.subheader("""
 # **Data-based personalized health guidance service**
 # """)
-st.markdown('<h2 style="font-family: Georgia, monospace;">Data-based personalized health guidance service</h2>', unsafe_allow_html=True)
+st.markdown('<h2 style="font-family: Georgia, monospace; font-size: 28px; ">Data-based personalized health guidance service</h2>', unsafe_allow_html=True)
 
              
 ################################################## Sidebar ##################################################
@@ -309,9 +309,10 @@ if choose == "Weight":
                     """
     cur.execute(goal_w_query)
     goal_weight= cur.fetchall()[0][0]
-    change_weight = last_weight - goal_weight
-
-    st.metric(label="Achievement for this project: Weight", value= last_weight, delta= change_weight)
+    # 수정
+    change_weight = round(last_weight - goal_weight, 2)
+    weight_value = f"{last_weight} kg"
+    st.metric(label="Current weight compared to goal weight", value= weight_value , delta= change_weight)
 
 ################################################## Calorie Tracking ##################################################
 # calorie tracking
@@ -626,26 +627,31 @@ elif choose == 'Calorie':
         round_fat = round(fat, 2)
         round_calories = round(calories, 2)
 
-        # 추천 칼로리 설명
-        st.markdown(
-            "**Recommended total calories: {} kcal, carbs : {} , proteins: {}, fats : {}**".format(
-                rec_tot_calories, rec_carbs, rec_proteins, rec_fats
-            ))
-        
-        # text 설명
-        st.markdown(
-            "For this meal, you consumed **{} kcal from carbs, {} kcal from protein, and {} kcal from fat. Total calories are {} kcal.**".format(
-                round_carbs, round_protein, round_fat, round_calories
-            )
-        )
-    # st.divider()
+        # 컬럼 생성
+        col1, col2 = st.columns(2)
 
-    # last_intake = new_calories_intake['result_calories'].iloc[-1]
-    # round_intake = round(last_intake, 2)
+        with col1:
+            st.subheader("Recommended Intake")
+            st.success("Total calories: {} kcal".format(rec_tot_calories))
+            st.info("Carbs : {}".format(rec_carbs))
+            st.info("Proteins: {}".format(rec_proteins))
+            st.info("Fats : {}".format(rec_fats))
 
-    # weight = round_intake - rec_tot_calories
+        with col2:
+            st.subheader("Meal Consumption")
+            st.success("Total calories: {} kcal".format(round_calories))
+            st.info("Calories from carbs: {} kcal".format(round_carbs))
+            st.info("Calories from proteins: {} kcal".format(round_protein))
+            st.info("Calories from fats: {} kcal".format(round_fat))
 
-    # st.metric(label="Calories", value= round_intake, delta= weight)
+    st.divider()
+
+    last_intake = new_calories_intake['result_calories'].iloc[-1]
+    round_intake = round(last_intake, 2)
+    # 수정
+    delta_intake = round(round_intake - rec_tot_calories, 2)
+    calorie_val = f"{round_intake} kcal"
+    st.metric(label="Calories consumed today compared to recommended intake", value= calorie_val, delta= delta_intake)
 
 ################################################## Meal Recommendation ##################################################
 
@@ -665,8 +671,8 @@ elif choose == 'Recommendation':
     
             with col2:
                 # 결과 출력
-                statements = f"""**You have total '{len(result)}' recommendations for today.**"""
-                st.write(statements)
+                statements = f"""**You have a total of '{len(result)}' food recommendations for today.**"""
+                st.info(statements)
 
                 # 결과를 데이터프레임으로 변환
                 data = {"Recommended Food": [i[0] for i in result]}
@@ -674,7 +680,8 @@ elif choose == 'Recommendation':
                 df.index = df.index + 1
 
                 # 데이터프레임 출력
-                st.write(df)
+                st.table(df)
+
 
 ################################################## Summary ##################################################
 
@@ -707,12 +714,24 @@ elif choose == 'Summary':
     # st.write('Start Time : ', summary_start_time)
     # st.write('End Time : ', summary_end_time)
 
-    st.write('<span style="font-size: 20px;"><b>User :</b> {}</span>'.format(summary_user), unsafe_allow_html=True)
-    st.write('<span style="font-size: 20px;"><b>Project Name :</b> {}</span>'.format(summary_project_name), unsafe_allow_html=True)
-    st.write('<span style="font-size: 20px;"><b>Goal Weight :</b> {}</span>'.format(summary_goal_weight), unsafe_allow_html=True)
-    st.write('<span style="font-size: 20px;"><b>Goal BMI :</b> {}</span>'.format(summary_goal_bmi), unsafe_allow_html=True)
-    st.write('<span style="font-size: 20px;"><b>Start Time :</b> {}</span>'.format(summary_start_time), unsafe_allow_html=True)
-    st.write('<span style="font-size: 20px;"><b>End Time :</b> {}</span>'.format(summary_end_time), unsafe_allow_html=True)    
+    # st.markdown("### User Summary")
+
+    # Create 2 columns
+    col1, col2 = st.columns(2)
+
+    # Using the columns
+    with col1:
+        st.subheader("User Details")
+        st.markdown("**User:** {}".format(summary_user))
+        st.markdown("**Project Name:** {}".format(summary_project_name))
+        st.markdown("**Goal Weight:** {}".format(summary_goal_weight))
+        st.markdown("**Goal BMI:** {}".format(summary_goal_bmi))
+
+    with col2:
+        st.subheader("Project Timeline")
+        st.markdown("**Start Time:** {}".format(summary_start_time))
+        st.markdown("**End Time:** {}".format(summary_end_time))
+
 
     #Show is_achieved
     cur = conn.cursor()
@@ -813,18 +832,24 @@ elif choose == 'Summary':
     # st.write('Project Status : ', status_cur_is_achieved)
     # st.write('<span style="font-size: 20px;"><b>Project Status :</b> {}</span>'.format(status_cur_is_achieved), unsafe_allow_html=True)
     if status_cur_is_achieved == 0:
+        status_cur_is_achieved = 'FAIL'
         # st.write('<span style="font-size: 20px; color: red;"><b>Project Status :</b> {}</span>'.format(status_cur_is_achieved), unsafe_allow_html=True)
-        status_text = '<span style="font-size: 20px;"><b>Project Status :</b></span> <span style="font-size: 20px; color: red;">{}</span>'.format(status_cur_is_achieved)
+        status_text = '<span style="font-size: 16px;"><b>Project Status :</b></span> <span style="font-size: 16px; color: red;">{}</span>'.format(status_cur_is_achieved)
         st.write(status_text, unsafe_allow_html=True)
 
     else:
-        status_text = '<span style="font-size: 20px;"><b>Project Status :</b></span> <span style="font-size: 20px; color: green;">{}</span>'.format(status_cur_is_achieved)
+        status_cur_is_achieved = 'SUCCESS'
+        status_text = '<span style="font-size: 16px;"><b>Project Status :</b></span> <span style="font-size: 16px; color: green;">{}</span>'.format(status_cur_is_achieved)
         st.write(status_text, unsafe_allow_html=True)
 
 ################## Current status #################################### 
 elif choose == "Current status":
     st.divider()
 
+    st.subheader("""
+            Current weight and today's calories consumption
+            """)
+    
     col1, col2 = st.columns(2)
     # Weight
     # weight_period == 'Total'
@@ -865,12 +890,15 @@ elif choose == "Current status":
         change_weight = cur_weight - goal_weight
         change_weight = round(change_weight, 2)
         
-        
+        value1 = f"{cur_weight} kg"
         #st.metric(label="Weight", value= cur_weight, delta= change_weight)
-        st.metric(label="Current Weight", value= cur_weight)
-        st.write(f"""
-                Current weight and today's calories consumption
-                """)
+        # st.metric(label="Current Weight", value= cur_weight)
+
+        st.metric(label="Current Weight", value= value1)
+        # st.write(f"""
+        #         Current weight and today's calories consumption
+        #         """)
+        st.info(f"Goal weight {goal_weight}" )
 
         
 
@@ -959,6 +987,12 @@ elif choose == "Current status":
             round_fat = round(fat, 2)
             round_calories = round(calories, 2)
 
+            value2 = f"{round_calories} kcal"
+
             #st.metric(label= "Calories", value= round_intake, delta= weight)
-            st.metric(label= "Today's Calories Consumption", value= round_calories)
-            st.write(f"Required calroies: {rec_tot_calories}" )
+            # st.metric(label= "Today's Calories Consumption", value= round_calories)
+            
+            st.metric(label= "Today's Calories Consumption", value= value2)
+            st.info(f"Required calroies {rec_tot_calories}")
+            
+            
