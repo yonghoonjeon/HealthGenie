@@ -33,7 +33,7 @@ def generate_dates(start_date):
     current_date = start_date
 
     # Generate dates for one year
-    for _ in range(365 + 30*7):
+    for _ in range(365 + 30*4 + 25):
         if isinstance(current_date, str):  # Check if current_date is a string
             cur_time = datetime.datetime.strptime(current_date[0:19], '%Y-%m-%d %H:%M:%S')
         else:

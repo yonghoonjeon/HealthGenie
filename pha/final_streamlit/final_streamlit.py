@@ -56,7 +56,7 @@ st.markdown('<h2 style="font-family: Georgia, monospace;">Data-based personalize
 ################################################## Sidebar ##################################################
 
 with st.sidebar:
-    choose = option_menu("Your Report", ["Summary", "Weight", "Calorie", "Diet"],
+    choose = option_menu("Your Report", ["Current status", "Summary", "Weight", "Calorie", "Diet"],
                          icons=['chat-right-text', 'speedometer', 'clipboard-data', 'hand-thumbs-up'],
                          menu_icon="person-workspace", default_index=0,
                          styles={
@@ -72,17 +72,19 @@ with st.sidebar:
 # 오늘 날짜 받아오기
 today = datetime.datetime.now()
 
-# 프로젝트 선택하기
-query = f"""SELECT user, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_bmi, goal_type
-            FROM pha_project
-            WHERE user_id = '{args.user_id}' and project_id = '{args.project_id}'"""
+query = f"""select user_name, p_name, start_time, end_time, goal_weight, cur_weight, goal_bmi, goal_type
+from
+(SELECT user_id,p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_bmi, goal_type
+FROM pha_project
+WHERE user_id = {args.user_id} and project_id ={args.project_id}) as temp
+join pha_user on temp.user_id =pha_user.user_id;"""
         
 cur = conn.cursor()
 cur.execute(query)
 project_info = cur.fetchall()
 
 # Convert data to pandas dataframe
-df_project_info = pd.DataFrame(data= project_info, columns=['user', 'p_name', 'start_time', 'end_time', 'goal_weight', 'cur_weight', 'goal_bmi', 'goal_type'])
+df_project_info = pd.DataFrame(data= project_info, columns=['user_name', 'p_name', 'start_time', 'end_time', 'goal_weight', 'cur_weight', 'goal_bmi', 'goal_type'])
 
 start_time = df_project_info['start_time'].values[0]
 end_time = df_project_info['end_time'].values[0]
@@ -124,45 +126,133 @@ if choose == "Weight":
     
     with col2:
         # period별 쿼리
-        if weight_period == 'Day':
-            query = f"""
-                    select update_time, cur_weight, user_id
-                    from pha_tracking
-                    where user_id = {args.user_id} and DATE(update_time) = DATE(NOW())
-                    ORDER BY update_time asc;
-                    
-                    """
-        elif weight_period == 'Week':
-            query = f"""select update_time, cur_weight, user_id
-                    from pha_tracking
-                    where user_id = {args.user_id} and DATE(update_time) BETWEEN DATE(NOW()) - INTERVAL '7' DAY AND DATE(NOW())
+        if project_status == 'ing':
+            if weight_period == 'day':
+                # query = f"""SELECT update_time, pha_project.cur_weight, goal_weight
+                #             from pha_project 
+                #             join pha_user ON pha_user.user_id= pha_project.user_id
+                #             JOIN pha_tracking ON pha_user.user_id= pha_tracking.user_id
+                #             where pha_user.user_id= '{args.user_id}' and project_id = '{args.project_id}' and DATE(update_time) = DATE(NOW())
+                #             order by update_time asc;
+                #         """
+                query = f"""
+                        select update_time, cur_weight, user_id
+                        from pha_tracking
+                        where user_id = {args.user_id} and DATE(update_time) <= DATE(NOW())
+                        ORDER BY update_time desc
+                        limit 1;
+                        
+                        """
+            elif weight_period == 'week':
+                query = f"""SELECT update_time, cur_weight, user_id
+                            FROM pha_tracking
+                            WHERE user_id = {args.user_id}
+                            AND DATE(update_time) BETWEEN 
+                                CASE 
+                                WHEN DATE(NOW()) - INTERVAL '7' DAY <= (SELECT start_time FROM pha_project WHERE user_id = {args.user_id} AND project_id = {args.project_id}) THEN (SELECT start_time FROM pha_project WHERE user_id = {args.user_id} AND project_id = {args.project_id})
+                                ELSE DATE(NOW()) - INTERVAL '7' DAY
+                                END
+                            AND DATE(NOW())
+                            ORDER BY update_time ASC;
+                        """
+            elif weight_period == 'month':
+                query = f"""SELECT update_time, cur_weight, user_id
+                            FROM pha_tracking
+                            WHERE user_id = {args.user_id}
+                            AND DATE(update_time) BETWEEN 
+                                CASE 
+                                WHEN DATE(NOW()) - INTERVAL '1' month <= (SELECT start_time FROM pha_project WHERE user_id = {args.user_id} AND project_id = {args.project_id}) THEN (SELECT start_time FROM pha_project WHERE user_id = {args.user_id} AND project_id = {args.project_id})
+                                ELSE DATE(NOW()) - INTERVAL '1' month
+                                END
+                            AND DATE(NOW())
+                            ORDER BY update_time ASC;
+                        """
+            elif weight_period == 'year':
+                query = f"""SELECT update_time, cur_weight, user_id
+                            FROM pha_tracking
+                            WHERE user_id = {args.user_id}
+                            AND DATE(update_time) BETWEEN 
+                                CASE 
+                                WHEN DATE(NOW()) - INTERVAL '1' year <= (SELECT start_time FROM pha_project WHERE user_id = {args.user_id} AND project_id = {args.project_id}) THEN (SELECT start_time FROM pha_project WHERE user_id = {args.user_id} AND project_id = {args.project_id})
+                                ELSE DATE(NOW()) - INTERVAL '1' year
+                                END
+                            AND DATE(NOW())
+                            ORDER BY update_time ASC;
+                        """
+            else: # weight_period == 'total'
+                query = f"""select update_time, cur_weight, user_id
+                        from pha_tracking
+                        where user_id = {args.user_id} and DATE(update_time) between (SELECT start_time FROM pha_project WHERE user_id = {args.user_id} AND project_id = {args.project_id})
+                        and (SELECT end_time FROM pha_project WHERE user_id = {args.user_id} AND project_id = {args.project_id})
                         order by update_time asc;
+                        """
+        else: # project_status = 'ended'
+            if weight_period == 'Day':
+                # query = f"""SELECT update_time, pha_project.cur_weight, goal_weight
+                #             from pha_project 
+                #             join pha_user ON pha_user.user_id= pha_project.user_id
+                #             JOIN pha_tracking ON pha_user.user_id= pha_tracking.user_id
+                #             where pha_user.user_id= '{args.user_id}' and project_id = '{args.project_id}' and DATE(update_time) = end_time)
+                #             order by update_time asc;
+                #         """
+                query = f"""
+                        select update_time, cur_weight, user_id
+                        from pha_tracking
+                        where user_id = {args.user_id} and DATE(update_time) <= DATE((SELECT end_time::text
+                        FROM pha_project
+                        WHERE user_id = {args.user_id} and project_id = {args.project_id}))
+                        ORDER BY update_time desc
+                        limit 1;
                     """
-        elif weight_period == 'Month':
-            query = f"""select update_time, cur_weight, user_id
-                    from pha_tracking
-                    where user_id = {args.user_id} and DATE(update_time) BETWEEN DATE(NOW()) - INTERVAL '30' DAY AND DATE(NOW())
+
+
+            elif weight_period == 'Week':
+                query = f"""select update_time, cur_weight, user_id
+                        from pha_tracking
+                        where user_id = {args.user_id} and DATE(update_time) BETWEEN DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id})) - INTERVAL '7' DAY AND DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id}))
+                            order by update_time asc;
+                        """
+            elif weight_period == 'Month':
+                query = f"""select update_time, cur_weight, user_id
+                        from pha_tracking
+                        where user_id = {args.user_id} and DATE(update_time) BETWEEN DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id})) - INTERVAL '1'month AND DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id}))
+                            order by update_time asc;
+                        """
+            elif weight_period == 'Year':
+                query = f"""select update_time, cur_weight, user_id
+                        from pha_tracking
+                        where user_id = {args.user_id} and DATE(update_time) BETWEEN DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id})) - INTERVAL '1' year AND DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id}))
+                            order by update_time asc;
+                        """
+            else: # weight_period == 'total'
+                query = f"""select update_time, cur_weight, user_id
+                        from pha_tracking
+                        where user_id = {args.user_id} and DATE(update_time) BETWEEN DATE((SELECT start_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id})) AND DATE((SELECT end_time::text
+            									FROM pha_project
+            									WHERE user_id = {args.user_id} and project_id = {args.project_id}))
                         order by update_time asc;
-                    """
-        elif weight_period == 'Year':
-            query = f"""select update_time, cur_weight, user_id
-                    from pha_tracking
-                    where user_id = {args.user_id} and DATE(update_time) BETWEEN DATE(NOW()) - INTERVAL '365' DAY AND DATE(NOW())
-                        order by update_time asc;
-                    """
-        else: # weight_period == 'Total'
-            query = f"""select update_time, cur_weight, user_id
-                    from pha_tracking
-                    where user_id = {args.user_id}
-                        order by update_time asc;
-                    """
+                        """
 
         # # 데이터베이스에서 데이터 추출
         cur = conn.cursor()
         cur.execute(query)
         data = cur.fetchall()
 
-        weight_tracking = pd.DataFrame(data, columns=['update_time', 'cur_weight', 'goal_weight'])
+        weight_tracking = pd.DataFrame(data, columns=['update_time', 'cur_weight', 'user_id'])
 
         n = len(weight_tracking['cur_weight'])
 
@@ -177,10 +267,17 @@ if choose == "Weight":
 
     st.divider()
     last_weight = round(weight_tracking['cur_weight'].iloc[-1], 2)
-    goal_weight = round(weight_tracking['goal_weight'].iloc[0], 2)
-    weight = last_weight - goal_weight
+    #goal_weight = round(weight_tracking['goal_weight'].iloc[0], 2)
+    goal_w_query = f"""
+                    select goal_weight
+                    from pha_project 
+                    where user_id = {args.user_id} and project_id = {args.project_id}
+                    """
+    cur.execute(goal_w_query)
+    goal_weight= cur.fetchall()[0][0]
+    change_weight = last_weight - goal_weight
 
-    st.metric(label="Weight", value= last_weight, delta= weight)
+    st.metric(label="Weight", value= last_weight, delta= change_weight)
 
 ################################################## Calorie Tracking ##################################################
 # calorie tracking
@@ -551,7 +648,7 @@ elif choose == 'Diet':
 elif choose == 'Summary':
     st.divider()
     
-    summary_user = df_project_info['user'].values[0]
+    summary_user = df_project_info['user_name'].values[0]
     summary_project_name = df_project_info['p_name'].values[0]
     summary_goal_weight = round(df_project_info['goal_weight'].values[0], 2)
     summary_goal_bmi = df_project_info['goal_bmi'].values[0]
@@ -672,30 +769,57 @@ elif choose == 'Summary':
     st.write('<span style="font-size: 20px;"><b>Project Status :</b> {}</span>'.format(status_cur_is_achieved), unsafe_allow_html=True)
     st.divider()
 
-################## ################## ################## 
+elif choose == "Current status":
+    ################## current status metric #################################### 
 
-    col1, col2, col3, col4, col5 = st.columns(5)
+    col1, col2 = st.columns(2)
     # Weight
     # weight_period == 'Total'
     with col1:
-        query = f"""select update_time, cur_weight, user_id
-                    from pha_tracking
-                    where user_id = {args.user_id}
-                    order by update_time asc;
+        if project_status == "ing" :
+            cur_w_query = f""" 
+                    select cur_weight
+                    from pha_tracking 
+                    where user_id = {args.user_id} AND DATE(update_time) <= DATE(NOW())
+                    ORDER BY update_time desc
+                    limit 1;
+                    """
+        else: 
+            cur_w_query = f""" 
+                    select cur_weight
+                    from pha_tracking 
+                    where user_id = {args.user_id} AND DATE(update_time) <= DATE((select end_time from pha_project where project_id = {args.project_id}))
+                    ORDER BY update_time desc
+                    limit 1;
                     """
 
         # # 데이터베이스에서 데이터 추출
         cur = conn.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
+        cur.execute(cur_w_query)
+        cur_weight = cur.fetchall()[0][0]
 
-        weight_tracking = pd.DataFrame(data, columns=['update_time', 'cur_weight', 'goal_weight'])
+        goal_w_query = f"""
+                        select goal_weight 
+                        from pha_project
+                        where project_id = {args.project_id}
+                        """
+        
+        cur.execute(goal_w_query)
+        goal_weight = cur.fetchall()[0][0]
+        
+        cur_weight = round(cur_weight, 2)
+        goal_weight = round(goal_weight, 2)
+        change_weight = cur_weight - goal_weight
+        change_weight = round(change_weight, 2)
+        
+        
+        #st.metric(label="Weight", value= cur_weight, delta= change_weight)
+        st.metric(label="Current Weight", value= cur_weight)
+        st.write(f"""
+                Current weight and today's calories consumption
+                """)
 
-        last_weight = round(weight_tracking['cur_weight'].iloc[-1], 2)
-        goal_weight = round(weight_tracking['goal_weight'].iloc[0], 2)
-        weight = last_weight - goal_weight
-
-        st.metric(label="Weight", value= last_weight, delta= weight)
+        
 
     #Calorie
     with col2:
@@ -741,8 +865,7 @@ elif choose == 'Summary':
             new_today_intake['result_protein'] = new_today_intake['protein'] * (new_today_intake['serving_size']/100)
             new_today_intake['result_carbs'] = new_today_intake['carbs'] * (new_today_intake['serving_size']/100)
 
-            column_sums = new_today_intake[['result_calories', 
-                                            'result_fat','result_protein', 'result_carbs']].sum()
+            column_sums = new_today_intake[['result_calories', 'result_fat','result_protein', 'result_carbs']].sum()
 
             # 하루 권장 칼로리 섭취량 계산
             # reference https://www.fao.org/3/y5686e/y5686e07.htm#bm07.1
@@ -786,40 +909,6 @@ elif choose == 'Summary':
             round_fat = round(fat, 2)
             round_calories = round(calories, 2)
 
-
-            query = f"""SELECT food_table.meals_id, food_table.food_id_id, calories, protein, fat, carbs,ref_serving_size, food_table.update_time as meal_time, food_table.end_time, food_table.start_time
-                        FROM 
-                            (SELECT temp.user_id, meals_id, meal_time, food_id_id, pha_meal.meal_time AS update_time, end_time, start_time
-                            FROM 
-                                (SELECT user_id, p_name, start_time::text, end_time::text, goal_weight, cur_weight, goal_type
-                                FROM pha_project
-                                WHERE user_id = {args.user_id} AND project_id ={args.project_id}) AS temp 
-                            JOIN pha_meal ON pha_meal.user_id = temp.user_id
-                            WHERE DATE(pha_meal.meal_time) BETWEEN DATE(temp.start_time) AND CURRENT_DATE) AS food_table 
-                            JOIN pha_food ON pha_food.food_id = food_table.food_id_id
-                            order by meal_time asc;"""
-                            
-                
-        # 데이터베이스에서 데이터 추출
-        cur = conn.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
-        df_calories_intake = pd.DataFrame(data, columns=['meal_id', 'food_id', 'calories', 'protein', 'fat', 'carbs', 'serving_size', 'meal_time', 'end_time', 'start_time'])
-
-
-        # considering serving size that user 
-
-        #new_calories_intake = pd.DataFrame(data[['calories', 'fat','protein','carbs','meal_time']], columns = ['caloreis', 'fat','protein','carbs','meal_time'])
-        new_calories_intake = df_calories_intake[['calories', 'fat','protein','carbs','meal_time', 'serving_size']].copy()
-
-        new_calories_intake['result_calories'] = new_calories_intake['calories'] * (new_calories_intake['serving_size'] / 100)
-        new_calories_intake['restult_fat'] = new_calories_intake['fat'] * (new_calories_intake['serving_size']/100)
-        new_calories_intake['result_protein'] = new_calories_intake['protein'] * (new_calories_intake['serving_size']/100)
-        new_calories_intake['result_carbs'] = new_calories_intake['carbs'] * (new_calories_intake['serving_size']/100)
-
-        last_intake = new_calories_intake['result_calories'].iloc[-1]
-        round_intake = round(last_intake, 2)
-
-        weight = round_intake - rec_tot_calories
-
-        st.metric(label= "Calories", value= round_intake, delta= weight)
+            #st.metric(label= "Calories", value= round_intake, delta= weight)
+            st.metric(label= "Today's Calories Consumption", value= round_calories)
+            st.write(f"Required calroies: {rec_tot_calories}" )
