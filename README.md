@@ -72,3 +72,19 @@ A password for all users is Jane902
     ### change directory here
     streamlit_app_dir = 'C:/Users/daye/Desktop/P4DS/HealthGenie/pha/final_streamlit'
 ```
+
+
+### Food Classification 
+
+1. Go to a link that follows: https://github.com/hwang-yj/food-recognition
+2. Click a link for the inferece written in colab 
+3. Run the code blocks sequentially in the colab and then follow the instruction (especially for ngrok token)
+4. A return url for the last code block needs to be written in /HealthGenie/pha/views.py at line 273 where you have to write a flask url
+   
+   ```python 
+    # change this url to your own url 
+    # line 273 
+    flask_url = 'http://f344-34-90-28-57.ngrok-free.app/analyze'
+        with open(image_path, 'rb') as img:
+            response = requests.post(flask_url, files={'file': img})
+   ```
