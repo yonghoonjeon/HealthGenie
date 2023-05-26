@@ -23,7 +23,7 @@ food_id,f_name,calories,protein,fat,carbs,ref_serving_size,cuisine,ingredients,a
 22,grape,69.0,0.7,0.2,18.0,100.0,fruits,grape,none,none,sweet,snack
 23,guacamole,160.0,2.0,15.0,8.0,100.0,mexican,"avocado, onion, tomato",none,"vegetarian, vegan",savory,side
 24,hot-dog,150.0,5.0,10.0,20.0,100.0,fast food,"bun, sausage",none,none,savory,main
-25,ice-cream,207.0,3.9,11.0,23.4,100.0,desserts,"milk, sugar, cream, flavorings",dairy,none,sweet,dessert
+25,ice cream,207.0,3.9,11.0,23.4,100.0,desserts,"milk, sugar, cream, flavorings",dairy,none,sweet,dessert
 26,muffin,426.0,6.1,19.0,58.3,100.0,bakery,"flour, sugar, butter, eggs",eggs,none,sweet,dessert
 27,orange,43.0,0.9,0.1,11.2,100.0,fruits,orange,none,none,sweet,snack
 28,pancake,227.0,6.1,9.2,31.2,100.0,breakfast,"flour, milk, eggs",eggs,none,sweet,dessert

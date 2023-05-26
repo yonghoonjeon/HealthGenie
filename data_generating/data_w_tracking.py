@@ -120,9 +120,11 @@ for user_id, joined_time, min_w, max_w, cur_weight in zip(list_user_id, list_joi
                 elif 30*r_duration*2 <= time_idx < 30*r_duration*r_duration*r_duration:
                     update_weight -= 0.001
                 elif 30*r_duration*r_duration*r_duration<= time_idx < 30*r_duration*r_duration*r_duration*r_duration:
-                    update_weight += 0.4
-            else:
+                    update_weight += 0.2
+            elif update_weight < min_w:
                 update_weight += 0.5
+            elif update_weight >= max_w:
+                update_weight -= 0.3
         
         query_list.append((track_id, str(update_time), update_weight, user_id))
         track_id += 1
