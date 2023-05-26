@@ -76,10 +76,9 @@ A password for all users is Jane902
 
 ### Food Classification 
 
-1. Go to a link that follows: https://github.com/hwang-yj/food-recognition
-2. Click a link for the inferece written in colab 
-3. Run the code blocks sequentially in the colab and then follow the instruction (especially for ngrok token)
-4. A return url for the last code block needs to be written in /HealthGenie/pha/views.py at line 273 where you have to write a flask url
+1. Go to a link that follows: https://colab.research.google.com/drive/1wGxywzdOba5jgmdp7KEyaCK5tX1LK2Bi 
+2. Run the code blocks sequentially in the colab and then follow the instruction (especially for ngrok token)
+3. A return url for the last code block needs to be written in /HealthGenie/pha/views.py at line 273 where you have to write a flask url
    
    ```python 
     # change this url to your own url 
