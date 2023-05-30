@@ -705,7 +705,7 @@ elif choose == 'Summary':
     summary_end_time = project_info[0][3]
     summary_goal_weight = round(project_info[0][4], 2)
     summary_goal_bmi = project_info[0][6]
-    
+    summary_goal_type = project_info[0][7]
 
     # st.write('User : ', summary_user)
     # st.write('Project Name : ', summary_project_name)
@@ -721,11 +721,12 @@ elif choose == 'Summary':
 
     # Using the columns
     with col1:
-        st.subheader("User Details")
+        st.subheader("Project Details")
         st.markdown("**User:** {}".format(summary_user))
         st.markdown("**Project Name:** {}".format(summary_project_name))
         st.markdown("**Goal Weight:** {}".format(summary_goal_weight))
         st.markdown("**Goal BMI:** {}".format(summary_goal_bmi))
+        st.markdown("**Goal Type:** {}".format(summary_goal_type))
 
     with col2:
         st.subheader("Project Timeline")
@@ -784,7 +785,7 @@ elif choose == 'Summary':
     AT_WEIGHT = cur.fetchall()[0][0]
 
     # 프로젝트가 끝남 , 감소 목표
-    if today >= end_time and goal_type == 'diet':
+    if today >= end_time and goal_type == 'Diet':
         if goal_weight >= AT_WEIGHT:
             update_query = f"""
                 UPDATE pha_project SET is_achieved = True 
@@ -887,8 +888,7 @@ elif choose == "Current status":
         
         cur_weight = round(cur_weight, 2)
         goal_weight = round(goal_weight, 2)
-        change_weight = cur_weight - goal_weight
-        change_weight = round(change_weight, 2)
+        
         
         value1 = f"{cur_weight} kg"
         #st.metric(label="Weight", value= cur_weight, delta= change_weight)
@@ -899,6 +899,40 @@ elif choose == "Current status":
         #         Current weight and today's calories consumption
         #         """)
         st.info(f"Goal weight {goal_weight}" )
+
+
+        ############cheer up! 
+        start_weight_q = f"""
+                        select cur_weight 
+                        from pha_project 
+                        where project_id = {args.project_id}
+                        """
+        cur.execute(start_weight_q)
+        start_weight = cur.fetchall()[0][0]
+
+        left_weight = cur_weight - goal_weight
+        left_weight = round(left_weight, 2)
+
+        change_weight = start_weight - goal_weight
+        change_weight = round(change_weight,2) 
+
+        goal_type_q = f"""
+                        select goal_type 
+                        from pha_project
+                        where project_id = {args.project_id};
+                        """
+        cur.execute(goal_type_q)
+        goal_type = cur.fetchall()[0][0]
+        if goal_type == "Diet":
+            if cur_weight <= goal_weight:
+                st.write(f"Way to go!! You have lost {change_weight} kg and {left_weight} kg is left for a success!! ")
+            else: 
+                st.write(f"Work hard!! You have gained {change_weight} kg!! ")
+        else: # goal_type = "putting on weight"
+            if cur_weight >= goal_weight:
+                st.wirte(f"Way to go!! You have gained {change_weight} kg and {left_weight} kg is left for a success")
+            else:
+                st.write(f"Work hard!!You have lost {-change_weight} kg ")
 
         
 
