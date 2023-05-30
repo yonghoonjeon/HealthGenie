@@ -208,6 +208,7 @@ class FoodRecommendation:
         #print(food_rating[0])    
         result = self.svd_algorithm(food_rating) # dictionary 
         result = result[self.user_id]
+        # filter the food based on allergy and diet restriction info of the user
         result = self.filtering_allergy_diet_restriction(result)
         result_food_list = []
         for food in result:

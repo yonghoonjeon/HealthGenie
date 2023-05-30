@@ -1,4 +1,3 @@
-import psycopg2
 import datetime 
 import random 
 import my_db_setting

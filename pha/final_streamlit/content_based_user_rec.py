@@ -48,7 +48,7 @@ def pre_process():
     # define a TF-IDF Vectorizer Object. Remove all english stop words such 'the' ,' a'
     tfidf =  TfidfVectorizer(stop_words = 'english')
 
-    # combine all foods information into a new column: activity_lvel, goal_bmi, goal_type 
+    # combine all users information into a new column: activity_lvel, goal_bmi, goal_type 
     pha_user['concat_col'] = pha_health_info['activity_level'] + ',' + pha_project['goal_bmi'].astype(str) + ',' + pha_project['goal_type']
     #print(pha_user.head(2))
 

@@ -270,7 +270,7 @@ def project_list(request):
         shutil.copyfile(image_path, media_path)
 
         #flask_url = 'http://37ce-34-170-252-194.ngrok-free.app/analyze'
-        flask_url = 'http://ff0d-34-143-132-156.ngrok-free.app/analyze'
+        flask_url = 'http://5aa4-35-226-97-94.ngrok-free.app/analyze'
         with open(image_path, 'rb') as img:
             response = requests.post(flask_url, files={'file': img})
 
