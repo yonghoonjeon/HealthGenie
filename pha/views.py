@@ -1,14 +1,14 @@
 from django.http import JsonResponse, HttpResponse
-from .forms import UserRegisterForm, ProjectForm, TrackingForm
+from .forms import UserRegisterForm, ProjectForm, HealthInfoForm, TrackingForm
 from django.contrib import messages
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView
+from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from django.utils import timezone
-from .models import Project, Tracking
+from .models import Project, Tracking, Food, Meal
 import streamlit as st
 import subprocess
 from django.core.files.storage import default_storage
@@ -23,7 +23,6 @@ import cv2
 import numpy as np
 import webcolors
 import json
-from .models import Food, Meal
 
 STANDARD_COLORS = [
     'DarkGrey', 'LawnGreen', 'Crimson', 'LightBlue' , 'Gold', 'BlanchedAlmond', 'Bisque',
@@ -51,10 +50,12 @@ STANDARD_COLORS = [
     'WhiteSmoke', 'Yellow', 'YellowGreen'
 ]
 
+
 def from_colorname_to_bgr(color):
     rgb_color = webcolors.name_to_rgb(color)
     result = (rgb_color.blue/255.0, rgb_color.green/255.0, rgb_color.red/255.0)
     return result
+
 
 def standard_to_bgr(list_color_name):
     standard = []
@@ -62,7 +63,9 @@ def standard_to_bgr(list_color_name):
         standard.append(from_colorname_to_bgr(list_color_name[i]))
     return standard
 
+
 color_list = standard_to_bgr(STANDARD_COLORS)
+
 
 # Create your views here.
 def draw_bboxes_v2(savepath, img, boxes, label_ids, scores, label_names=None, obj_list=None):
@@ -114,6 +117,7 @@ def draw_bboxes_v2(savepath, img, boxes, label_ids, scores, label_names=None, ob
 
     cv2.imwrite(savepath, img_bgr)
 
+
 def index(request):
     return redirect('project_list')
 
@@ -147,6 +151,7 @@ def analyze(request):
             return JsonResponse({'error': 'An error occurred while processing the image.'})
 
     return render(request, 'pha/project_list.html')
+
 
 def register_view(request):
     """
@@ -306,17 +311,69 @@ def project_list(request):
     return render(request, 'pha/project_list.html', context)
 
 
+# class ProjectCreateView(LoginRequiredMixin, CreateView):
+#     model = Project
+#     form_class = ProjectForm
+#     template_name = 'pha/create_project.html'
+#     success_url = reverse_lazy('project_list')
+#
+#     def form_valid(self, form):
+#         form.instance.user = self.request.user
+#         return super().form_valid(form)
 
 
-class ProjectCreateView(LoginRequiredMixin, CreateView):
-    model = Project
-    form_class = ProjectForm
+class ProjectCreateView(LoginRequiredMixin, TemplateView):
     template_name = 'pha/create_project.html'
     success_url = reverse_lazy('project_list')
+    form_classes = {
+        'project_form': ProjectForm,
+        'health_form': HealthInfoForm,
+    }
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project_form'] = self.project_form
+        context['health_form'] = self.health_form
+        return context
+
+
+    def get(self, request, *args, **kwargs):
+        self.project_form = self.form_classes['project_form']()
+        self.health_form = self.form_classes['health_form']()
+        return self.render_to_response(
+            self.get_context_data(project_form=self.project_form, health_form=self.health_form))
+
+    def post(self, request, *args, **kwargs):
+        project_form = self.form_classes['project_form'](request.POST)
+        health_form = self.form_classes['health_form'](request.POST)
+        if project_form.is_valid() and health_form.is_valid():
+            project = project_form.save(commit=False)
+            project.user = self.request.user
+            project.save()
+
+            health = health_form.save(commit=False)
+            health.user_id = self.request.user
+            health.project_id = project
+            health.save()
+
+            return redirect(self.success_url)
+        else:
+            context = self.get_context_data(project_form=project_form, health_form=health_form)
+            return self.render_to_response(context)
+
+    def form_valid(self, project_form, health_form):
+        project = project_form.save(commit=False)
+        project.user = self.request.user
+        project.save()
+
+        health = health_form.save(commit=False)
+        health.user_id = self.request.user
+        health.project_id = project  # Assign the project_id to the foreign key field
+        health.save()
+
+        return super().form_valid(project_form)
+
+
 
 def project_detail(request, project_id):
     project = Project.objects.get(pk=project_id)
@@ -379,6 +436,7 @@ def project_detail(request, project_id):
         # Render the HTML template with the project details
         context = {'project': project}
         return render(request, 'pha/project_detail.html', context)
+
 
 def streamlit_view(request):
     # Streamlit 코드 작성

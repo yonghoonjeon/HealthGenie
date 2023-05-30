@@ -7,32 +7,41 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'your_custom_css.css' %}">
     <div class="container my-5">
-        <h1 class="mb-4">프로젝트 생성</h1>
+        <h1 class="mb-4">Create a new project</h1>
         <form method="post" class="mt-3">
             {% csrf_token %}
             <div class="mb-3">
-                {{ form.p_name.label_tag }} {{ form.p_name }}
+                {{ project_form.p_name.label_tag }} {{ project_form.p_name }}
             </div>
             <div class="mb-3">
-                {{ form.is_achieved.label_tag }} {{ form.is_achieved }}
+                {{ project_form.is_achieved.label_tag }} {{ project_form.is_achieved }}
             </div>
             <div class="mb-3">
-                {{ form.cur_weight.label_tag }} {{ form.cur_weight }}
+                {{ project_form.cur_weight.label_tag }} {{ project_form.cur_weight }}
             </div>
             <div class="mb-3">
-                {{ form.goal_weight.label_tag }} {{ form.goal_weight }}
+                {{ project_form.goal_weight.label_tag }} {{ project_form.goal_weight }}
             </div>
             <div class="mb-3">
-                {{ form.goal_bmi.label_tag }} {{ form.goal_bmi }}
+                {{ project_form.goal_bmi.label_tag }} {{ project_form.goal_bmi }}
             </div>
             <div class="mb-3">
-                {{ form.goal_type.label_tag }} {{ form.goal_type }}
+                {{ project_form.goal_type.label_tag }} {{ project_form.goal_type }}
             </div>
             <div class="mb-3">
-                {{ form.start_time.label_tag }} {{ form.start_time }}
+                {{ project_form.start_time.label_tag }} {{ project_form.start_time }}
             </div>
             <div class="mb-3">
-                {{ form.end_time.label_tag }} {{ form.end_time }}
+                {{ project_form.end_time.label_tag }} {{ project_form.end_time }}
+            </div>
+            <div class="mb-3">
+                {{ health_form.allergy_name.label_tag }} {{ health_form.allergy_name }}
+            </div>
+            <div class="mb-3">
+                {{ health_form.activity_level.label_tag }} {{ health_form.activity_level }}
+            </div>
+            <div class="mb-3">
+                {{ health_form.dietary_restriction.label_tag }} {{ health_form.dietary_restriction }}
             </div>
             <button type="submit" class="btn btn-primary">Create</button>
         </form>

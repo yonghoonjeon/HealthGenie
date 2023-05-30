@@ -1,6 +1,6 @@
 from django import forms
 from django.forms.widgets import NumberInput
-from .models import User, Project, Tracking
+from .models import User, Project, HealthInfo, Tracking
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -44,6 +44,47 @@ class ProjectForm(forms.ModelForm):
         self.fields['start_time'] = forms.DateField(label='Start date', widget=NumberInput(attrs={'type': 'date'}))
         self.fields['end_time'] = forms.DateField(label='End date', widget=NumberInput(attrs={'type': 'date'}))
         self.fields['goal_type'] = forms.ChoiceField(label='Select your goal type', choices=GOAL_CHOICES)
+
+
+ALLERGY_CHOICES = [
+    ('None', 'None'),
+    ('gluten', 'Gluten'),
+    ('soybeans', 'Soybeans'),
+    ('eggs', 'Eggs'),
+    ('dairy', 'Diary'),
+    ('tree nuts', 'Tree Nuts'),
+    ('peanuts', 'Peanuts'),
+    ('fish', 'Fish'),
+    ('shellfish', 'Shellfish')
+]
+
+ACTIVITY_CHOICES = [
+    ('sedentary', 'Sedentary'),
+    ('moderate', 'Moderate'),
+    ('active', 'Active')
+]
+
+DIETARY_CHOICES = [
+    ('None', 'None'),
+    ('vegeterian', 'Vegeterian'),
+    ('vegan', 'Vegan'),
+    ('halal', 'Halal'),
+    ('kosher', 'Kosher'),
+    ('gluten_intolerance', 'Gluten Intolerance'),
+    ('lactose_intolerance', 'Lactose Intolerance')
+]
+
+
+class HealthInfoForm(forms.ModelForm):
+    class Meta:
+        model = HealthInfo
+        fields = ['allergy_name', 'activity_level', 'dietary_restriction']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['allergy_name'] = forms.ChoiceField(label='Allergy', choices=ALLERGY_CHOICES)
+        self.fields['activity_level'] = forms.ChoiceField(label='Activity Level', choices=ACTIVITY_CHOICES)
+        self.fields['dietary_restriction'] = forms.ChoiceField(label='Dietary Restriction', choices=DIETARY_CHOICES)
 
 
 class TrackingForm(forms.ModelForm):
