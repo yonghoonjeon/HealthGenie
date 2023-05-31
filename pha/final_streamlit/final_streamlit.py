@@ -278,7 +278,8 @@ class my_Streamlit:
 
                 st.plotly_chart(fig)
 
-        st.divider()
+        # st.divider()
+
         # last_weight = round(weight_tracking['cur_weight'].iloc[-1], 2)
         # #goal_weight = round(weight_tracking['goal_weight'].iloc[0], 2)
         # goal_w_query = f"""
@@ -624,7 +625,7 @@ class my_Streamlit:
                 st.info("Calories from proteins: {} kcal".format(round_protein))
                 st.info("Calories from fats: {} kcal".format(round_fat))
 
-        st.divider()
+        # st.divider()
 
         # last_intake = new_calories_intake['result_calories'].iloc[-1]
         # round_intake = round(last_intake, 2)
@@ -655,13 +656,15 @@ class my_Streamlit:
         My_class = FoodRecommendation(args.user_id, args.project_id, args.n_recommd_meal)
         result = My_class.run()
         
-        #with col2:
+        # with col2:
         # 결과 출력
         statements = f"""**You have a total of '{len(result)}' food recommendations for today.**"""
         st.info(statements)
 
         # 결과를 데이터프레임으로 변환
-        data = {"Recommended Food": [i[0] for i in result]}
+        # data = {"Recommended Food": [i[0] for i in result]}
+        data = {"Recommended Food": [f"&#8226; <span style='font-size: 18px;'>{i[0]}</span>" for i in result]}
+
         df = pd.DataFrame(data)
         df.index = df.index + 1
 
@@ -674,6 +677,11 @@ class my_Streamlit:
             url = f"""https://www.coupang.com/np/search?component=&q={food_name}&channel=user"""
             st.markdown(f"[{food_name}]({url}/{food_name_url})")
             list_coupang_link.append(url)
+
+        st.write("**🛒 Selecting a recommended food leads to a link where you can purchase it 🛒**")
+
+
+
 
         #df['coupang_link'] = list_coupang_link
 
@@ -921,7 +929,7 @@ class my_Streamlit:
             # st.write(f"""
             #         Current weight and today's calories consumption
             #         """)
-            st.info(f"Goal weight {goal_weight}" )
+            st.info(f"Goal weight {goal_weight} kg" )
 
 
             ############cheer up! 
@@ -948,16 +956,26 @@ class my_Streamlit:
             goal_type = cur.fetchall()[0][0]
             if goal_type == "Diet":
                 if cur_weight <= goal_weight:
-                    st.write(f"Way to go!! You have lost {change_weight} kg and {left_weight} kg is left for a success!! ")
-                else: 
-                    st.write(f"Work hard!! You have gained {change_weight} kg!! ")
+                    # st.write(f"Way to go!! You have lost {change_weight} kg and {left_weight} kg is left for a success!! ")
+                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Way to go!!</span> You have gained <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> and <span style='font-size: 20px; font-weight: bold; color: orange;'>{left_weight} kg</span> is left for a success <span style='font-size: 20px;'>🏋️‍♂️🏋️</span>", unsafe_allow_html=True)
+
+                else:
+                    # st.write(f"Work hard!! You have gained {change_weight} kg!! ")
+                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Work hard!!</span> You have gained <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> <span style='font-size: 20px;'>🏋️‍♂️</span>", unsafe_allow_html=True)
+
             else: # goal_type = "putting on weight"
                 if cur_weight >= goal_weight:
                     left_weight = -left_weight
-                    st.wirte(f"Way to go!! You have gained {change_weight} kg and {left_weight} kg is left for a success")
+                    # st.wirte(f"Way to go!! You have gained {change_weight} kg and {left_weight} kg is left for a success")
+                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Way to go!!</span> You have gained <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> and <span style='font-size: 20px; font-weight: bold; color: orange;'>{left_weight} kg</span> is left for a success <span style='font-size: 20px;'>🏋️‍♂️🏋️</span>", unsafe_allow_html=True)
+
                 else:
                     change_weight = -change_weight
-                    st.write(f"Work hard!!You have lost {-change_weight} kg ")
+                    # st.write(f"Work hard!! You have lost {-change_weight} kg ")
+                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Work hard!!</span> You have lost <span style='font-size: 20px; font-weight: bold; color: orange;'>{-change_weight} kg</span> <span style='font-size: 20px;'>🏋️‍♂️</span>", unsafe_allow_html=True)
+
+
+
 
             
 
@@ -1046,20 +1064,24 @@ class my_Streamlit:
                 calories = 0
                 value2 = "0 kcal"
                 st.metric(label = "**No calories consumed today.**", value = value2)
-                st.info(f"Required calroies {rec_tot_calories}")
+                st.info(f"Required calroies {rec_tot_calories} kcal")
             else: 
                 #st.metric(label= "Calories", value= round_intake, delta= weight)
                 # st.metric(label= "Today's Calories Consumption", value= round_calories)
             
                 st.metric(label= "Today's Calories Consumption", value= value2)
-                st.info(f"Required calroies {rec_tot_calories}")
+                st.info(f"Required calroies {rec_tot_calories} kcal")
             
             if rec_tot_calories <= calories:
                 exceed_cal = calories-rec_tot_calories
-                st.write(f"You have consumed {exceed_cal} kg for today")
+                # st.write(f"You have consumed {exceed_cal} kcal for today")
+                st.write(f"</span> You have consumed <span style='font-size: 20px; font-weight: bold; color: orange;'>{exceed_cal} kcal </span> <span style='font-size: 18px; color: black;'>for <span style='font-weight: bold;'>today</span></span> <span style='font-size: 20px;'>🍴</span>", unsafe_allow_html=True)
+
             else:
                 remain_cal = rec_tot_calories - calories
-                st.write(f"You have {remain_cal} kcal left for today")
+                # st.write(f"You have {remain_cal} kcal left for today")
+                st.write(f"</span> You have <span style='font-size: 20px; font-weight: bold; color: orange;'>{remain_cal} kcal left </span> <span style='font-size: 18px; color: black;'>for <span style='font-weight: bold;'>today</span></span> <span style='font-size: 20px;'>🍴</span>", unsafe_allow_html=True)
+
                 
             
 
