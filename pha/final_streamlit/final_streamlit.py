@@ -677,6 +677,7 @@ class my_Streamlit:
             url = f"""https://www.coupang.com/np/search?component=&q={food_name}&channel=user"""
             st.markdown(f"[{food_name}]({url}/{food_name_url})")
             list_coupang_link.append(url)
+        st.divider()
 
         st.write("**🛒 Selecting a recommended food leads to a link where you can purchase it 🛒**")
 
