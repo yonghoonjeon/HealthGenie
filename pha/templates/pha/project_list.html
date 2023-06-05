@@ -16,17 +16,13 @@
     <div class="container my-5">
         <h1 class="text-center">Welcome to HealthGenie 🧞</h1>
         <section>
-            <h2 class="mb-4">Projects</h2>
+            <h2 class="mb-4"> ⚱️ Projects</h2>
             {% if projects %}
                 <ul class="list-unstyled">
                     {% for project in projects %}
                         <li class="mb-3 p-3 border border-1 rounded">
                             <h2>{{ project.p_name }}</h2>
-                            <p>Start Time: {{ project.start_time }}</p>
-                            <p>End Time: {{ project.end_time }}</p>
-                            <p>Goal Type: {{ project.goal_type }}</p>
-                            <p>Achieved: {{ project.is_achieved }}</p>
-                            <a href="{% url 'project_detail' project_id=project.pk %}" class="project-link">...see more</a>
+                            <a href="{% url 'project_detail' project_id=project.pk %}" class="project-link">...see reports</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -37,13 +33,13 @@
             <p></p>
         </section>
         <section>
-            <h2 class="mb-4">Update current weight</h2>
+            <h2 class="mb-4"> ⚖️ Update current weight</h2>
             <form method="post" class="mt-3">
                 {% csrf_token %}
                 <div class="mb-3">
-                    <label for="{{ form.cur_weight.id_for_label }}" class="form-label">{{ form.cur_weight.label }}</label>
+                    <label for="{{ form.cur_weight.id_for_label }}" class="form-label">{{ form.cur_weight.label }}:</label>
                     {{ form.cur_weight }}
-                </div>
+                <br>
                 <button type="submit" class="btn btn-primary">Update</button>
                 <div class="alert-info">
                     {% if messages %}
@@ -56,11 +52,13 @@
             <p></p>
         </section>
 <section>
-    <h2 class="mt-4">Food Image Classification</h2>
+    <h2 class="mt-4"> 📸 Food Image Classification</h2>
     <form method="post" enctype="multipart/form-data" id="foodImageForm">
         {% csrf_token %}
         <input type="file" name="file" required>
-        <button type="submit">Analyze</button>
+        <br>
+        <br>
+        <button type="submit" class="btn btn-primary">Analyze</button>
     </form>
     {% if image_url %}
         <h2>Uploaded image</h2>
@@ -75,7 +73,7 @@
             {% endfor %}
         </ul>
 {% if result.csv_name1 %}
-    <h2>Insert Meal</h2>
+    <h2> 🍽️ Insert Meal</h2>
     <form id="mealForm-{{ forloop.counter }}" class="mealForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% for item in result.csv_name1|load_json %}
@@ -89,23 +87,47 @@
                 </div>
             </div>
         {% endfor %}
-        <button type="submit" id="insertButtonAll">Insert All</button>
+        <button type="submit" id="insertButtonAll" class="btn btn-primary">Insert All</button>
     </form>
 {% endif %}
     {% endif %}
 </section>
 
+{#<section>#}
+{#    <h2 class="mt-4"> 🍽️ Insert Meal</h2>#}
+{#    <form id="mealForm" method="post" enctype="multipart/form-data">#}
+{#        {% csrf_token %}#}
+{#        <input type="text" id="f_name" name="f_name" placeholder="f_name">#}
+{#        <input type="text" name="meal_type" placeholder="Meal type">#}
+{#        <input type="number" name="serving_size" placeholder="Serving size">#}
+{#        <input type="number" name="rating" placeholder="Rating">#}
+{#        <button type="submit" id="insertButton">Insert</button>#}
+{#    </form>#}
+{#</section>#}
 <section>
-    <h2 class="mt-4">Insert Meal</h2>
+    <h2 class="mt-4">🍽️ Insert Meal</h2>
     <form id="mealForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="text" id="f_name" name="f_name" placeholder="f_name">
-        <input type="text" name="meal_type" placeholder="Meal type">
-        <input type="number" name="serving_size" placeholder="Serving size">
-        <input type="number" name="rating" placeholder="Rating">
-        <button type="submit" id="insertButton">Insert</button>
+        <div class="mb-3">
+            <label for="{{ meal_form.food_id.id_for_label }}" class="form-label">{{ meal_form.food_id.label }}:</label>
+            {{ meal_form.food_id }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ meal_form.meal_type.id_for_label }}" class="form-label">{{ meal_form.meal_type.label }}:</label>
+            {{ meal_form.meal_type }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ meal_form.serving_size.id_for_label }}" class="form-label">{{ meal_form.serving_size.label }}:</label>
+            {{ meal_form.serving_size }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ meal_form.rating.id_for_label }}" class="form-label">{{ meal_form.rating.label }}:</label>
+            {{ meal_form.rating }}
+        </div>
+        <button type="submit" id="insertButton" class="btn btn-primary">Insert</button>
     </form>
 </section>
+
 
 
     </div>

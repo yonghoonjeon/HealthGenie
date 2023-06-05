@@ -1,6 +1,6 @@
 from django import forms
 from django.forms.widgets import NumberInput
-from .models import User, Project, HealthInfo, Tracking
+from .models import User, Project, HealthInfo, Tracking, Meal, Food
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -96,3 +96,31 @@ class TrackingForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['cur_weight'] = forms.CharField(label='Current Weight (kg)')
 
+
+MEAL_CHOICES = [
+    ('breakfast', 'Breakfast'),
+    ('lunch', 'Lunch'),
+    ('dinner', 'Dinner'),
+    ('snack', 'Snack')
+]
+
+
+class MealForm(forms.ModelForm):
+    class Meta:
+        model = Meal
+        fields = ['food_id', 'meal_type', 'serving_size', 'rating']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        food_choices = [(food.f_name, food.f_name) for food in Food.objects.order_by('f_name')]
+        self.fields['food_id'] = forms.ChoiceField(label='Food name', choices=food_choices)
+        self.fields['meal_type'] = forms.ChoiceField(label='Meal type', choices=MEAL_CHOICES)
+        self.fields['serving_size'] = forms.CharField(label='Serving size (g)')
+        self.fields['rating'] = forms.ChoiceField(label='Rating', choices=[(i, i) for i in range(1, 6)])
+
+    def clean(self):
+        cleaned_data = super().clean()
+        food_name = cleaned_data.get('food_id')
+        food_instance = Food.objects.get(f_name=food_name)
+        cleaned_data['food_id'] = food_instance
+        return cleaned_data
