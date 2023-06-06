@@ -127,10 +127,10 @@ for idx, user_id in enumerate(list_user_id):
 
         if j < 3:
             cur_weight = goal_weight - random.uniform(1, 10)
-            goal_type = 'Diet'
+            goal_type = 'diet'
         else:
             cur_weight = goal_weight + random.uniform(1, 5)
-            goal_type = 'Putting on weight'
+            goal_type = 'putting on weight'
         
         # goal_bmi 
         goal_bmi = goal_weight / ((list_height[idx] *0.01)**2)
