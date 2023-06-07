@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "pha",
     "rest_framework",
-    "rest_api.apps.RestApiConfig"
+    "rest_api.apps.RestApiConfig",
+    "dark"
 ]
 
 MIDDLEWARE = [

@@ -11,7 +11,7 @@ class UserManager(BaseUserManager):
 
     def _create_user(self, user_name, email, password, **extra_fields):
         if not email:
-            raise ValueError('Email을 입력해주세요.')
+            raise ValueError('Please enter your email address.')
         email = self.normalize_email(email)
         user = self.model(user_name=user_name, email=email, **extra_fields)
         user.set_password(password)
@@ -42,8 +42,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     FEMALE = 'female'
 
     SEX = (
-        (MALE, '남성'),
-        (FEMALE, '여성')
+        (MALE, 'Male'),
+        (FEMALE, 'Female')
     )
     user_id = models.AutoField(primary_key=True)
     user_name = models.CharField(max_length=50, blank=True)

@@ -2,6 +2,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
+    <link rel="stylesheet" href="{% static '/dark-theme.css' %}">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,6 +17,9 @@
 </head>
 <body>
 {% block content %}
+{% endblock %}
+{% block extrahead %}
+    <link href="/static/admin/css/dark.css" type="text/css" media="(prefers-color-scheme: dark)" rel="stylesheet">
 {% endblock %}
 <script src="{% static 'bootstrap.min.js' %}"></script>
 </body>
