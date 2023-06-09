@@ -73,38 +73,27 @@
                 <li>{{ key }}: {{ value }}</li>
             {% endfor %}
         </ul>
-{% if result.csv_name1 %}
-    <h2> 🍽️ Insert Meal</h2>
-    <form id="mealForm-{{ forloop.counter }}" class="mealForm" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% for item in result.csv_name1|load_json %}
-            <div>
-                <input type="hidden" name="f_name[]" value="{{ item.names|lower }}">
-                <div class="d-flex">
-                    <span class="meal-type-name">{{ item.names }}</span>
-                    <input type="text" name="meal_type[]" placeholder="Meal type">
-                    <input type="number" name="serving_size[]" placeholder="Serving size">
-                    <input type="number" name="rating[]" placeholder="Rating">
-                </div>
-            </div>
-        {% endfor %}
-        <button type="submit" id="insertButtonAll" class="btn btn-primary">Insert All</button>
-    </form>
-{% endif %}
-    {% endif %}
+        {% if result.csv_name1 %}
+            <h2>🍽️ Insert Meal</h2>
+            <form id="mealForm-{{ forloop.counter }}" class="mealForm" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for item in result.csv_name1|load_json %}
+                    <div>
+                        <input type="hidden" name="f_name[]" value="{{ item.names|lower }}">
+                        <div class="d-flex">
+                            <span class="meal-type-name">{{ item.names }}</span>
+                            <input type="text" name="meal_type[]" placeholder="Meal type">
+                            <input type="number" name="serving_size[]" placeholder="Serving size">
+                            <input type="number" name="rating[]" placeholder="Rating">
+                        </div>
+                    </div>
+                {% endfor %}
+                <button type="submit" id="insertButtonAll" class="btn btn-primary">Insert All</button>
+            </form>
+        {% endif %}
+            {% endif %}
 </section>
 
-{#<section>#}
-{#    <h2 class="mt-4"> 🍽️ Insert Meal</h2>#}
-{#    <form id="mealForm" method="post" enctype="multipart/form-data">#}
-{#        {% csrf_token %}#}
-{#        <input type="text" id="f_name" name="f_name" placeholder="f_name">#}
-{#        <input type="text" name="meal_type" placeholder="Meal type">#}
-{#        <input type="number" name="serving_size" placeholder="Serving size">#}
-{#        <input type="number" name="rating" placeholder="Rating">#}
-{#        <button type="submit" id="insertButton">Insert</button>#}
-{#    </form>#}
-{#</section>#}
 <section>
     <h2 class="mt-4">🍽️ Insert Meal</h2>
     <form id="mealForm" method="post" enctype="multipart/form-data">
@@ -128,6 +117,8 @@
         <button type="submit" id="insertButton" class="btn btn-primary">Insert</button>
     </form>
 </section>
+
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>

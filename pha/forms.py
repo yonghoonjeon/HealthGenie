@@ -121,6 +121,11 @@ class MealForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         food_name = cleaned_data.get('food_id')
-        food_instance = Food.objects.get(f_name=food_name)
+
+        try:
+            food_instance = Food.objects.get(f_name=food_name)
+        except Food.DoesNotExist:
+            raise forms.ValidationError('Food not found.')
+
         cleaned_data['food_id'] = food_instance
         return cleaned_data

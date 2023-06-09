@@ -194,6 +194,7 @@ def login_view(request):
 @login_required
 def project_list(request):
     projects = Project.objects.filter(user=request.user)
+    meal_form = MealForm()
     if request.method == 'POST':
         current_datetime = timezone.now()
         datetime_object = datetime.strptime(current_datetime.strftime("%Y-%m-%d %H:%M:%S.%f"), "%Y-%m-%d %H:%M:%S.%f")
@@ -209,62 +210,61 @@ def project_list(request):
             form.save()
             messages.success(request, "Update successfully!")
 
-        meal_form = MealForm(request.POST)
+        meal_form = MealForm(request.POST)  # Remove the previous meal_form instantiation
         if meal_form.is_valid():
             meal = meal_form.save(commit=False)
             meal.user = request.user
             meal.save()
+            messages.success(request, "Meal inserted successfully!")
 
-        # if 'f_name[]' in request.POST:
-        #     food_names = request.POST.getlist('f_name[]')
-        #     meal_types = request.POST.getlist('meal_type[]')
-        #     serving_sizes = request.POST.getlist('serving_size[]')
-        #     ratings = request.POST.getlist('rating[]')
-        #
-        #     for i in range(len(food_names)):
-        #         # Get the food name, meal type, serving size, and rating for this meal
-        #         food_name = food_names[i]
-        #         meal_type = meal_types[i]
-        #         serving_size = serving_sizes[i]
-        #         rating = ratings[i]
-        #         if serving_size == '' or meal_type == '' or rating == '':
-        #             continue
-        #
-        #         # Find the corresponding Food object
-        #         try:
-        #             food = Food.objects.get(f_name=food_name)
-        #         except Food.DoesNotExist:
-        #             return JsonResponse({'error': 'Food not found.'}, status=404)
-        #
-        #         meal = Meal.objects.create(
-        #             user=request.user,
-        #             food_id=food,
-        #             meal_type=meal_type,
-        #             serving_size=serving_size,
-        #             rating=rating
-        #         )
-        #         meal.save()
-        #
-        # if 'f_name' in request.POST:
-        #     food_name = request.POST['f_name']
-        #     meal_type = request.POST['meal_type']
-        #     serving_size = request.POST['serving_size']
-        #     rating = request.POST['rating']
-        #
-        #     # Find the corresponding Food object
-        #     try:
-        #         food = Food.objects.get(f_name=food_name)
-        #     except Food.DoesNotExist:
-        #         return JsonResponse({'error': 'Food not found.'}, status=404)
-        #
-        #     meal = Meal.objects.create(
-        #         user=request.user,
-        #         food_id=food,
-        #         meal_type=meal_type,
-        #         serving_size=serving_size,
-        #         rating=rating
-        #     )
-        #     meal.save()
+        if 'f_name[]' in request.POST:
+            food_names = request.POST.getlist('f_name[]')
+            meal_types = request.POST.getlist('meal_type[]')
+            serving_sizes = request.POST.getlist('serving_size[]')
+            ratings = request.POST.getlist('rating[]')
+
+            for i in range(len(food_names)):
+                food_name = food_names[i]
+                meal_type = meal_types[i]
+                serving_size = serving_sizes[i]
+                rating = ratings[i]
+                if serving_size == '' or meal_type == '' or rating == '':
+                    continue
+
+                try:
+                    food = Food.objects.get(f_name=food_name)
+                except Food.DoesNotExist:
+                    return JsonResponse({'error': 'Food not found.'}, status=404)
+
+                meal = Meal.objects.create(
+                    user=request.user,
+                    food_id=food,
+                    meal_type=meal_type,
+                    serving_size=serving_size,
+                    rating=rating
+                )
+                meal.save()
+
+        if 'f_name' in request.POST:
+            food_name = request.POST['f_name']
+            meal_type = request.POST['meal_type']
+            serving_size = request.POST['serving_size']
+            rating = request.POST['rating']
+
+            try:
+                food = Food.objects.get(f_name=food_name)
+            except Food.DoesNotExist:
+                return JsonResponse({'error': 'Food not found.'}, status=404)
+
+            meal = Meal.objects.create(
+                user=request.user,
+                food_id=food,
+                meal_type=meal_type,
+                serving_size=serving_size,
+                rating=rating
+            )
+            meal.save()
+
     else:
         form = TrackingForm()
         meal_form = MealForm()
@@ -384,7 +384,7 @@ class ProjectCreateView(LoginRequiredMixin, TemplateView):
 
 def project_detail(request, project_id):
     project = Project.objects.get(pk=project_id)
-    streamlit_app_dir = 'C:/Users/daye/Desktop/P4DS/HealthGenie/pha/final_streamlit'
+    streamlit_app_dir = '/Users/yonghoonjeon/Documents/PycharmProjects/HealthGenie/pha/final_streamlit'
     #subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '4', '--project_id', '12', '--server.headless', 'true'], cwd=streamlit_app_dir)
     #user_id = request.user
 
