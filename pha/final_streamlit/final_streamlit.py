@@ -46,6 +46,8 @@ class my_Streamlit:
     def __init__(self, user_id, project_id):
         self.user_id = user_id 
         self.project_id = project_id 
+        
+    # 첫 번째 기능 구현
     def Project_info(self):
         ##################################################Project Info ##################################################
 
@@ -63,15 +65,15 @@ class my_Streamlit:
         cur.execute(query)
         project_info = cur.fetchall()
 
-        # Convert data to pandas dataframe
+        # Convert data to pandas dataframe (프로젝트 정보를 데이터프레임으로 저장)
         df_project_info = pd.DataFrame(data= project_info, columns=['user_name', 'p_name', 'start_time', 'end_time', 'goal_weight', 'cur_weight', 'goal_bmi', 'goal_type'])
 
+        # 프로젝트 start_time, end_time 추출
         start_time = df_project_info['start_time'].values[0]
         end_time = df_project_info['end_time'].values[0]
-
+        
         # start_time = project_info[0][2]
         # end_time = project_info[0][3]
-
 
         start_time =time.mktime(time.strptime(start_time[:-3], '%Y-%m-%d %H:%M:%S'))
         end_time =time.mktime(time.strptime(end_time[:-3], '%Y-%m-%d %H:%M:%S'))
@@ -79,12 +81,14 @@ class my_Streamlit:
         # 종료된 project인지 진행 중인 project인지 판단 
         start_time = datetime.datetime.fromtimestamp(start_time)
         end_time = datetime.datetime.fromtimestamp(end_time)
-
+        
+        # 현재 시간과 end_time 비교하여 project_status 저장 
         if end_time <= datetime.datetime.today():
             self.project_status = 'ended'
         else:
             self.project_status = 'ing'
         
+    # 두 번째 기능 구현
     def Weight_tracking(self):
 
         ################################################## Weight Tracking ##################################################
