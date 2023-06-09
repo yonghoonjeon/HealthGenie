@@ -47,7 +47,7 @@ class my_Streamlit:
         self.user_id = user_id 
         self.project_id = project_id 
         
-    # 첫 번째 기능 구현
+    # 프로젝트 정보
     def Project_info(self):
         ##################################################Project Info ##################################################
 
@@ -88,7 +88,7 @@ class my_Streamlit:
         else:
             self.project_status = 'ing'
         
-    # 두 번째 기능 구현
+    # 첫 번째 기능 구현
     def Weight_tracking(self):
 
         ################################################## Weight Tracking ##################################################
@@ -267,7 +267,7 @@ class my_Streamlit:
 
             n = len(weight_tracking['cur_weight'])
 
-            # # 데이터 시각화 - 그래프    
+            # # 데이터 시각화 - 막대 그래프, 선 그래프   
             if weight_period == "Day":
                 fig = px.bar(weight_tracking, x= 'update_time', y= 'cur_weight')
                 fig.update_layout(title='📈 Weight Tracking per ' + weight_period.capitalize())
@@ -299,7 +299,7 @@ class my_Streamlit:
         # st.metric(label="Current weight compared to goal weight", value= weight_value , delta= change_weight)
     
   
-        # 세 번째 기능 구현
+        # 두 번째 기능 구현
     def Cal_tracking(self):
         ################################################## Calorie Tracking ##################################################
         st.divider()
@@ -508,7 +508,7 @@ class my_Streamlit:
         st.divider()
 
         # (2) 오늘 섭취한 누적 칼로리
-        # 칼로리 분석 정보 가져오기
+        # 칼로리 분석한 정보 가져오기
 
         query = f"""SELECT food.meals_id, meal_time, pha_food.food_id, f_name, food.serving_size, pha_food.carbs, pha_food.protein, pha_food.fat, pha_food.calories
                     FROM
@@ -525,11 +525,11 @@ class my_Streamlit:
         cur.execute(query)
         today_cal_info = cur.fetchall()
 
-        # Convert data to pandas dataframe
+        # Convert data to pandas dataframe -> todat_cal_info
         df = pd.DataFrame(data=today_cal_info, columns=['meal_id', 'meal_time', 'food_id', 'f_name','serving_size', 'carbs', 'protein', 'fat', 'calories'])
 
         # 데이터 추출
-        # if the user does not recorde the food of the day 
+        # if the user does not record the food of the day 
         if len(df) == 0: 
             carbs = 0
             protein = 0
@@ -538,7 +538,7 @@ class my_Streamlit:
             # 확인 
             st.markdown("**No calories consumed today.**")
         else: 
-            # 오늘 칼로리 계산 
+            # 오늘 칼로리 계산 - 영양소별로 계산해서 제시
             new_today_intake = df[['calories', 'fat','protein','carbs','meal_time', 'serving_size']].copy()
 
             new_today_intake['result_calories'] = new_today_intake['calories'] * (new_today_intake['serving_size'] / 100)
@@ -588,7 +588,7 @@ class my_Streamlit:
             fat = column_sums['result_fat']
             calories = column_sums['result_calories']
 
-            # 데이터 summary 
+            # 데이터 summary -> 요구되는 영양소와 소비한 영양소 제시
             data = {
                 'nutrient': ['total_calorie', 'carbs', 'protein', 'fat'],
                 'required': [rec_tot_calories, rec_carbs, rec_proteins, rec_fats],
@@ -638,13 +638,14 @@ class my_Streamlit:
         # calorie_val = f"{round_intake} kcal"
         # st.metric(label="Calories consumed today compared to recommended intake", value= calorie_val, delta= delta_intake)
     
-    def get_image_url(self, query): 
+    def get_image_url(self, query):  
         url = None 
         for result in search(query, num_results=1):
             url = result 
             break
         return url 
     
+    # 세 번째 기능 구현
     def Meal_recommendation(self):
         ################################################## Meal Recommendation ##################################################
         st.divider()
@@ -673,6 +674,7 @@ class my_Streamlit:
         df.index = df.index + 1
 
         #create coupang link 
+        # 음식을 추천해 준 후, 추천받은 음식을 구매할 수 있는 링크를 함께 제공
         list_coupang_link = []
         for i in result:
             food_name = i[0]
@@ -937,7 +939,7 @@ class my_Streamlit:
             st.info(f"Goal weight {goal_weight} kg" )
 
 
-            ############cheer up! 
+            ############cheer up! -> 목표 몸무게 대비 현재 몸무게를 비교한 후 그에 대한 동기부여 멘트 제공(심리적 요소 반영)
             start_weight_q = f"""
                             select cur_weight 
                             from pha_project 
