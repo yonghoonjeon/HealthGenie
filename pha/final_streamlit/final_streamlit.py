@@ -95,7 +95,7 @@ class my_Streamlit:
         st.divider()
         col1, col2, col3, col4, col5 = st.columns(5)
         with col1:
-        # period_selectbox
+        # period_selectbox : 기간 선택하는 옵션
             weight_period = st.radio(
                 '**Select the period**',
                 ('Day','Week', 'Month', 'Year', 'Total'), 
@@ -103,8 +103,8 @@ class my_Streamlit:
             )
         
         with col2:
-            # period별 쿼리
-            if self.project_status == 'ing':
+            # period별 쿼리(day, week, month, year, total)
+            if self.project_status == 'ing': # 프로젝트 진행 중인 경우
                 if weight_period == 'day':
                     query = f"""
                             select update_time, cur_weight, user_id
@@ -157,7 +157,7 @@ class my_Streamlit:
                             and (SELECT end_time FROM pha_project WHERE user_id = {args.user_id} AND project_id = {args.project_id})
                             order by update_time asc;
                             """
-            else: # self.project_status = 'ended'
+            else: # self.project_status = 'ended' -> 프로젝트가 끝난 경우
                 if weight_period == 'Day':
                     # query = f"""SELECT update_time, pha_project.cur_weight, goal_weight
                     #             from pha_project 
@@ -261,13 +261,13 @@ class my_Streamlit:
             cur = conn.cursor()
             cur.execute(query)
             data = cur.fetchall()
-
+            
+            # update_time, cur_weight, user_id 정보 가져오기
             weight_tracking = pd.DataFrame(data, columns=['update_time', 'cur_weight', 'user_id'])
 
             n = len(weight_tracking['cur_weight'])
 
-                
-            # # 데이터 시각화    
+            # # 데이터 시각화 - 그래프    
             if weight_period == "Day":
                 fig = px.bar(weight_tracking, x= 'update_time', y= 'cur_weight')
                 fig.update_layout(title='📈 Weight Tracking per ' + weight_period.capitalize())
@@ -298,22 +298,22 @@ class my_Streamlit:
         # weight_value = f"{last_weight} kg"
         # st.metric(label="Current weight compared to goal weight", value= weight_value , delta= change_weight)
     
-        
-
-        ################################################## Calorie Tracking ##################################################
+  
+        # 세 번째 기능 구현
     def Cal_tracking(self):
+        ################################################## Calorie Tracking ##################################################
         st.divider()
 
         col1, col2, col3, col4, col5 = st.columns(5)
         # (1) project 기간동안 섭취한 누적 칼로리
-        with col1:
+        with col1: # 기간 선택하는 옵션
             calorie_period = st.radio(
                 '**Select the period**',
                 ('Day','Week', 'Month', 'Year', 'Total'), 
                 index=1
             )
 
-            # period별 쿼리
+            # period별 쿼리 -> project_status가 종료된 경우와 진행 중인 경우로 나눠서 
             if self.project_status == 'ended':
                 if calorie_period == 'Day':
                     # not apply DATE() function to the meal_time for only 'Day' calorie_period 
