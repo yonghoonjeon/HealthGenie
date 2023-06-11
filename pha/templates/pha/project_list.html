@@ -63,16 +63,11 @@
     </form>
     {% if image_url %}
         <h2>Uploaded image</h2>
-        <img src="{{ image_url }}" alt="Uploaded image">
+        <img src="{{ image_url }}" alt="Uploaded image" style="width:500px; height:500px;">
     {% endif %}
 
     {% if result %}
         <h2>Result</h2>
-        <ul>
-            {% for key, value in result.items %}
-                <li>{{ key }}: {{ value }}</li>
-            {% endfor %}
-        </ul>
         {% if result.csv_name1 %}
             <h2>🍽️ Insert Meal</h2>
             <form id="mealForm-{{ forloop.counter }}" class="mealForm" method="post" enctype="multipart/form-data">

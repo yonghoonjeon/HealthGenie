@@ -50,7 +50,7 @@ STANDARD_COLORS = [
     'WhiteSmoke', 'Yellow', 'YellowGreen'
 ]
 
-process = None
+process = list()
 
 def from_colorname_to_bgr(color):
     rgb_color = webcolors.name_to_rgb(color)
@@ -138,7 +138,7 @@ def analyze(request):
         shutil.copyfile(image_path, media_path)
 
         # 이 부분에 Flask 애플리케이션의 호스트 및 포트를 입력하세요.
-        flask_url = 'http://a209-34-83-252-103.ngrok-free.app/analyze'
+        flask_url = 'http://91fd-183-101-218-37.ngrok-free.app/analyze'
 
         with open(image_path, 'rb') as img:
             response = requests.post(flask_url, files={'file': img})
@@ -195,8 +195,9 @@ def login_view(request):
 @login_required
 def project_list(request):
     global process
-    if process is not None:
-        process.terminate()
+    for tmp in process:
+        tmp.terminate()
+        process.remove(tmp)
     projects = Project.objects.filter(user=request.user)
     meal_form = MealForm()
     if request.method == 'POST':
@@ -204,7 +205,7 @@ def project_list(request):
         datetime_object = datetime.strptime(current_datetime.strftime("%Y-%m-%d %H:%M:%S.%f"), "%Y-%m-%d %H:%M:%S.%f")
         datetime_object = datetime_object.replace(hour=0, minute=0, second=0, microsecond=0)
         try:
-            instance = Tracking.objects.get(user=request.user, update_time__gt=datetime_object)
+            instance = Tracking.objects.get(user=request.user, update_time=datetime_object)
             form = TrackingForm(request.POST, instance=instance)
         except Tracking.DoesNotExist:
             form = TrackingForm(request.POST)
@@ -286,7 +287,7 @@ def project_list(request):
         shutil.copyfile(image_path, media_path)
 
         #flask_url = 'http://37ce-34-170-252-194.ngrok-free.app/analyze'
-        flask_url = 'http://7810-34-122-23-45.ngrok-free.app/analyze'
+        flask_url = 'http://91fd-183-101-218-37.ngrok-free.app/analyze'
         with open(image_path, 'rb') as img:
             response = requests.post(flask_url, files={'file': img})
 
@@ -388,8 +389,11 @@ class ProjectCreateView(LoginRequiredMixin, TemplateView):
 
 def project_detail(request, project_id):
     global process
+    for tmp in process:
+        tmp.terminate()
+        process.remove(tmp)
     project = Project.objects.get(pk=project_id)
-    streamlit_app_dir = '/Users/yonghoonjeon/Documents/PycharmProjects/HealthGenie/pha/final_streamlit'
+    streamlit_app_dir = 'C:/Users/yjhwang/HealthGenie/pha/final_streamlit'
     #subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '4', '--project_id', '12', '--server.headless', 'true'], cwd=streamlit_app_dir)
     #user_id = request.user
 
@@ -412,7 +416,7 @@ def project_detail(request, project_id):
         '--browser.serverAddress',
         '0.0.0.0',
         '--server.port',
-        '8501',
+        '8581',
         '--server.headless',
         'true',
         '--',
@@ -421,49 +425,11 @@ def project_detail(request, project_id):
         '--project_id',
         str(project_id)
     ]
-    process = subprocess.Popen(streamlit_command, cwd=streamlit_app_dir)
+    process.append(subprocess.Popen(streamlit_command, cwd=streamlit_app_dir))
 
-    if request.method == 'POST':
-        # try to get the uploaded file from the request
-        try:
-            uploaded_file = request.FILES['image']
-        except KeyError:
-            error_message = "No image file found."
-            return render(request, 'pha/project_detail.html', {'error_message': error_message, 'project': project})
-
-        # Define the API endpoint and parameters
-        api_key = "d9b5f98d641f40748fb64aa423495b87"
-        input_url = 'https://api.spoonacular.com/food/images/classify'
-        params = {'apiKey': api_key}
-
-        # Send a POST request to the API endpoint and store the response
-        response = requests.post(input_url, params=params, files={'file': uploaded_file})
-
-        # Check if the request was successful
-        if response.status_code == 200:
-            # Extract the data from the response
-            data = response.json()
-
-            # Get the class of the food item with the highest probability
-            food_class = data['category']
-
-            # Get the probability of the predicted class
-            probability = data['probability']
-
-            # Render the HTML template with the classification results
-            return render(request, 'pha/project_detail.html', {'food_class': food_class, 'probability': probability, 'project': project})
-
-        else:
-            # If the request was not successful, display an error message
-            food_class = None
-            probability = None
-            error_message = f"Request error: {response.status_code}"
-            return render(request, 'pha/project_detail.html', {'error_message': error_message, 'project': project})
-
-    else:
-        # Render the HTML template with the project details
-        context = {'project': project}
-        return render(request, 'pha/project_detail.html', context)
+    # Render the HTML template with the project details
+    context = {'project': project}
+    return render(request, 'pha/project_detail.html', context)
 
 
 def streamlit_view(request):
