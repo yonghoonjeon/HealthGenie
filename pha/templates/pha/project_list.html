@@ -16,6 +16,14 @@
 <body>
     <div class="container my-5">
         <h1 class="text-center">Welcome to HealthGenie 🧞</h1>
+        <div class="text-end">
+            {% if request.user.is_authenticated %}
+                <form action="{% url 'logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Sign-out</button>
+                </form>
+            {% endif %}
+        </div>
         <section>
             <h2 class="mb-4"> ⚱️ Projects</h2>
             {% if projects %}
