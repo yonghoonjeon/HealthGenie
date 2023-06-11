@@ -192,6 +192,16 @@ def login_view(request):
 
     return render(request, 'pha/login.html')
 
+def logout_view(request):
+    if not request.user.is_authenticated:
+        return redirect('accounts:login')
+
+    logout(request)  # Logout the user
+    request.session.flush()  # Clear the session data
+    request.session.clear_expired()  # Clear expired sessions
+
+    return render(request, 'pha/login.html')
+
 @login_required
 def project_list(request):
     global process
@@ -320,6 +330,10 @@ def project_list(request):
             return JsonResponse({'error': 'An error occurred while processing the image.'})
 
     context = {'projects': projects, 'form': form, 'meal_form': meal_form}
+
+    if 'logout' in request.POST:
+        logout(request)
+
     return render(request, 'pha/project_list.html', context)
 
 
