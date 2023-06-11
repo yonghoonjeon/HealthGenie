@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     "pha",
     "rest_framework",
     "rest_api.apps.RestApiConfig",
-    "dark"
+    "dark",
+    "corsheaders"
 ]
 
 MIDDLEWARE = [
@@ -57,8 +58,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # CORS
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware"
 ]
 
 ROOT_URLCONF = "HealthGenie.urls"
@@ -140,5 +141,8 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8081',
 )
-
+CORS_ALLOWED_ORIGINS = [
+    'http://0.0.0.0:8501',  # Replace with the URL of your Streamlit app
+    # other allowed origins
+]
 

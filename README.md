@@ -100,3 +100,42 @@ A password for all users is Jane902
         with open(image_path, 'rb') as img:
             response = requests.post(flask_url, files={'file': img})
    ```
+   
+### CORS(Cross-Origin Resource Sharing)
+1. install nginx
+```shell
+   sudo apt-get install nginx
+```   
+2. open the Nginx configuration file 
+```shell
+  sudo nano /etc/nginx/nginx.conf
+```
+3. inside the http block, add the following lines to enable CORS headers:
+``` shell
+   http {
+      # Other configurations
+   
+      server {
+          # Other server configurations
+          location / {
+              proxy_pass http://<your-ipaddress>:8501;  # Replace with your Streamlit app URL
+              add_header 'Access-Control-Allow-Origin' '*';
+              add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+              add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+              add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+          }
+      }
+   }
+``` 
+4.Save the Nginx configuration file and restart Nginx to apply the changes:
+```shell
+   sudo service nginx restart
+```
+5. replace <your-ipaddress> in pha/project_detail.html
+```html
+   <iframe src="http://<your-ipaddress>:8501" width="100%" height="850" style="border: none;"></iframe>
+```
+6. run the django server
+```shell
+  python manage.py runserver 0.0.0.0:8000 
+``` 

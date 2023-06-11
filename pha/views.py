@@ -50,6 +50,7 @@ STANDARD_COLORS = [
     'WhiteSmoke', 'Yellow', 'YellowGreen'
 ]
 
+process = None
 
 def from_colorname_to_bgr(color):
     rgb_color = webcolors.name_to_rgb(color)
@@ -193,6 +194,9 @@ def login_view(request):
 
 @login_required
 def project_list(request):
+    global process
+    if process is not None:
+        process.terminate()
     projects = Project.objects.filter(user=request.user)
     meal_form = MealForm()
     if request.method == 'POST':
@@ -282,7 +286,7 @@ def project_list(request):
         shutil.copyfile(image_path, media_path)
 
         #flask_url = 'http://37ce-34-170-252-194.ngrok-free.app/analyze'
-        flask_url = 'http://5aa4-35-226-97-94.ngrok-free.app/analyze'
+        flask_url = 'http://7810-34-122-23-45.ngrok-free.app/analyze'
         with open(image_path, 'rb') as img:
             response = requests.post(flask_url, files={'file': img})
 
@@ -383,6 +387,7 @@ class ProjectCreateView(LoginRequiredMixin, TemplateView):
 
 
 def project_detail(request, project_id):
+    global process
     project = Project.objects.get(pk=project_id)
     streamlit_app_dir = '/Users/yonghoonjeon/Documents/PycharmProjects/HealthGenie/pha/final_streamlit'
     #subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '4', '--project_id', '12', '--server.headless', 'true'], cwd=streamlit_app_dir)
@@ -400,7 +405,23 @@ def project_detail(request, project_id):
         cursor.execute(user_query, [user_email])
         user_data = cursor.fetchone()
     user_id = user_data[0]
-    subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--server.headless', 'true', '--', '--user_id', str(user_id), '--project_id', str(project_id)], cwd=streamlit_app_dir)
+    streamlit_command = [
+        'streamlit',
+        'run',
+        './final_streamlit.py',
+        '--browser.serverAddress',
+        '0.0.0.0',
+        '--server.port',
+        '8501',
+        '--server.headless',
+        'true',
+        '--',
+        '--user_id',
+        str(user_id),
+        '--project_id',
+        str(project_id)
+    ]
+    process = subprocess.Popen(streamlit_command, cwd=streamlit_app_dir)
 
     if request.method == 'POST':
         # try to get the uploaded file from the request
