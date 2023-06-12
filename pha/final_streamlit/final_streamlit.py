@@ -46,6 +46,8 @@ class my_Streamlit:
     def __init__(self, user_id, project_id):
         self.user_id = user_id 
         self.project_id = project_id 
+        
+    # 프로젝트 정보
     def Project_info(self):
         ##################################################Project Info ##################################################
 
@@ -63,15 +65,15 @@ class my_Streamlit:
         cur.execute(query)
         project_info = cur.fetchall()
 
-        # Convert data to pandas dataframe
+        # Convert data to pandas dataframe (프로젝트 정보를 데이터프레임으로 저장)
         df_project_info = pd.DataFrame(data= project_info, columns=['user_name', 'p_name', 'start_time', 'end_time', 'goal_weight', 'cur_weight', 'goal_bmi', 'goal_type'])
 
+        # 프로젝트 start_time, end_time 추출
         start_time = df_project_info['start_time'].values[0]
         end_time = df_project_info['end_time'].values[0]
-
+        
         # start_time = project_info[0][2]
         # end_time = project_info[0][3]
-
 
         start_time =time.mktime(time.strptime(start_time[:-3], '%Y-%m-%d %H:%M:%S'))
         end_time =time.mktime(time.strptime(end_time[:-3], '%Y-%m-%d %H:%M:%S'))
@@ -79,19 +81,21 @@ class my_Streamlit:
         # 종료된 project인지 진행 중인 project인지 판단 
         start_time = datetime.datetime.fromtimestamp(start_time)
         end_time = datetime.datetime.fromtimestamp(end_time)
-
+        
+        # 현재 시간과 end_time 비교하여 project_status 저장 
         if end_time <= datetime.datetime.today():
             self.project_status = 'ended'
         else:
             self.project_status = 'ing'
         
+    # 첫 번째 기능 구현
     def Weight_tracking(self):
 
         ################################################## Weight Tracking ##################################################
         st.divider()
         col1, col2, col3, col4, col5 = st.columns(5)
         with col1:
-        # period_selectbox
+        # period_selectbox : 기간 선택하는 옵션
             weight_period = st.radio(
                 '**Select the period**',
                 ('Day','Week', 'Month', 'Year', 'Total'), 
@@ -99,8 +103,8 @@ class my_Streamlit:
             )
         
         with col2:
-            # period별 쿼리
-            if self.project_status == 'ing':
+            # period별 쿼리(day, week, month, year, total)
+            if self.project_status == 'ing': # 프로젝트 진행 중인 경우
                 if weight_period == 'day':
                     query = f"""
                             select update_time, cur_weight, user_id
@@ -153,7 +157,7 @@ class my_Streamlit:
                             and (SELECT end_time FROM pha_project WHERE user_id = {args.user_id} AND project_id = {args.project_id})
                             order by update_time asc;
                             """
-            else: # self.project_status = 'ended'
+            else: # self.project_status = 'ended' -> 프로젝트가 끝난 경우
                 if weight_period == 'Day':
                     # query = f"""SELECT update_time, pha_project.cur_weight, goal_weight
                     #             from pha_project 
@@ -257,13 +261,13 @@ class my_Streamlit:
             cur = conn.cursor()
             cur.execute(query)
             data = cur.fetchall()
-
+            
+            # update_time, cur_weight, user_id 정보 가져오기
             weight_tracking = pd.DataFrame(data, columns=['update_time', 'cur_weight', 'user_id'])
 
             n = len(weight_tracking['cur_weight'])
 
-                
-            # # 데이터 시각화    
+            # # 데이터 시각화 - 막대 그래프, 선 그래프   
             if weight_period == "Day":
                 fig = px.bar(weight_tracking, x= 'update_time', y= 'cur_weight')
                 fig.update_layout(title='📈 Weight Tracking per ' + weight_period.capitalize())
@@ -294,22 +298,22 @@ class my_Streamlit:
         # weight_value = f"{last_weight} kg"
         # st.metric(label="Current weight compared to goal weight", value= weight_value , delta= change_weight)
     
-        
-
-        ################################################## Calorie Tracking ##################################################
+  
+        # 두 번째 기능 구현
     def Cal_tracking(self):
+        ################################################## Calorie Tracking ##################################################
         st.divider()
 
         col1, col2, col3, col4, col5 = st.columns(5)
         # (1) project 기간동안 섭취한 누적 칼로리
-        with col1:
+        with col1: # 기간 선택하는 옵션
             calorie_period = st.radio(
                 '**Select the period**',
                 ('Day','Week', 'Month', 'Year', 'Total'), 
                 index=1
             )
 
-            # period별 쿼리
+            # period별 쿼리 -> project_status가 종료된 경우와 진행 중인 경우로 나눠서 
             if self.project_status == 'ended':
                 if calorie_period == 'Day':
                     # not apply DATE() function to the meal_time for only 'Day' calorie_period 
@@ -504,7 +508,7 @@ class my_Streamlit:
         st.divider()
 
         # (2) 오늘 섭취한 누적 칼로리
-        # 칼로리 분석 정보 가져오기
+        # 칼로리 분석한 정보 가져오기
 
         query = f"""SELECT food.meals_id, meal_time, pha_food.food_id, f_name, food.serving_size, pha_food.carbs, pha_food.protein, pha_food.fat, pha_food.calories
                     FROM
@@ -521,11 +525,11 @@ class my_Streamlit:
         cur.execute(query)
         today_cal_info = cur.fetchall()
 
-        # Convert data to pandas dataframe
+        # Convert data to pandas dataframe -> todat_cal_info
         df = pd.DataFrame(data=today_cal_info, columns=['meal_id', 'meal_time', 'food_id', 'f_name','serving_size', 'carbs', 'protein', 'fat', 'calories'])
 
         # 데이터 추출
-        # if the user does not recorde the food of the day 
+        # if the user does not record the food of the day 
         if len(df) == 0: 
             carbs = 0
             protein = 0
@@ -534,7 +538,7 @@ class my_Streamlit:
             # 확인 
             st.markdown("**No calories consumed today.**")
         else: 
-            # 오늘 칼로리 계산 
+            # 오늘 칼로리 계산 - 영양소별로 계산해서 제시
             new_today_intake = df[['calories', 'fat','protein','carbs','meal_time', 'serving_size']].copy()
 
             new_today_intake['result_calories'] = new_today_intake['calories'] * (new_today_intake['serving_size'] / 100)
@@ -584,7 +588,7 @@ class my_Streamlit:
             fat = column_sums['result_fat']
             calories = column_sums['result_calories']
 
-            # 데이터 summary 
+            # 데이터 summary -> 요구되는 영양소와 소비한 영양소 제시
             data = {
                 'nutrient': ['total_calorie', 'carbs', 'protein', 'fat'],
                 'required': [rec_tot_calories, rec_carbs, rec_proteins, rec_fats],
@@ -634,13 +638,14 @@ class my_Streamlit:
         # calorie_val = f"{round_intake} kcal"
         # st.metric(label="Calories consumed today compared to recommended intake", value= calorie_val, delta= delta_intake)
     
-    def get_image_url(self, query): 
+    def get_image_url(self, query):  
         url = None 
         for result in search(query, num_results=1):
             url = result 
             break
         return url 
     
+    # 세 번째 기능 구현
     def Meal_recommendation(self):
         ################################################## Meal Recommendation ##################################################
         st.divider()
@@ -669,6 +674,7 @@ class my_Streamlit:
         df.index = df.index + 1
 
         #create coupang link 
+        # 음식을 추천해 준 후, 추천받은 음식을 구매할 수 있는 링크를 함께 제공
         list_coupang_link = []
         for i in result:
             food_name = i[0]
@@ -818,7 +824,7 @@ class my_Streamlit:
         AT_WEIGHT = cur.fetchall()[0][0]
 
         # 프로젝트가 끝남 , 감소 목표
-        if today >= end_time and goal_type == 'Diet':
+        if today >= end_time and goal_type == 'diet':
             if goal_weight >= AT_WEIGHT:
                 update_query = f"""
                     UPDATE pha_project SET is_achieved = True 
@@ -933,7 +939,7 @@ class my_Streamlit:
             st.info(f"Goal weight {goal_weight} kg" )
 
 
-            ############cheer up! 
+            ############cheer up! -> 목표 몸무게 대비 현재 몸무게를 비교한 후 그에 대한 동기부여 멘트 제공(심리적 요소 반영)
             start_weight_q = f"""
                             select cur_weight 
                             from pha_project 
@@ -955,10 +961,10 @@ class my_Streamlit:
                             """
             cur.execute(goal_type_q)
             goal_type = cur.fetchall()[0][0]
-            if goal_type == "Diet":
+            if goal_type == "diet":
                 if cur_weight <= goal_weight:
                     # st.write(f"Way to go!! You have lost {change_weight} kg and {left_weight} kg is left for a success!! ")
-                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Way to go!!</span> You have gained <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> and <span style='font-size: 20px; font-weight: bold; color: orange;'>{left_weight} kg</span> is left for a success <span style='font-size: 20px;'>🏋️‍♂️🏋️</span>", unsafe_allow_html=True)
+                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Good job!!</span> You have lost <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> and <span style='font-size: 20px; font-weight: bold; color: orange;'>{left_weight} kg</span> is left for a success <span style='font-size: 20px;'>🏋️‍♂️🏋️</span>", unsafe_allow_html=True)
 
                 else:
                     # st.write(f"Work hard!! You have gained {change_weight} kg!! ")
@@ -968,12 +974,12 @@ class my_Streamlit:
                 if cur_weight >= goal_weight:
                     left_weight = -left_weight
                     # st.wirte(f"Way to go!! You have gained {change_weight} kg and {left_weight} kg is left for a success")
-                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Way to go!!</span> You have gained <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> and <span style='font-size: 20px; font-weight: bold; color: orange;'>{left_weight} kg</span> is left for a success <span style='font-size: 20px;'>🏋️‍♂️🏋️</span>", unsafe_allow_html=True)
+                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Good job!!</span> You have gained <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> and <span style='font-size: 20px; font-weight: bold; color: orange;'>{left_weight} kg</span> is left for a success <span style='font-size: 20px;'>🏋️‍♂️🏋️</span>", unsafe_allow_html=True)
 
                 else:
                     change_weight = -change_weight
                     # st.write(f"Work hard!! You have lost {-change_weight} kg ")
-                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Work hard!!</span> You have lost <span style='font-size: 20px; font-weight: bold; color: orange;'>{-change_weight} kg</span> <span style='font-size: 20px;'>🏋️‍♂️</span>", unsafe_allow_html=True)
+                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Work hard!!</span> You have lost <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> <span style='font-size: 20px;'>🏋️‍♂️</span>", unsafe_allow_html=True)
 
 
 
