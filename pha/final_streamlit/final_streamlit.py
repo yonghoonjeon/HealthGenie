@@ -824,7 +824,7 @@ class my_Streamlit:
         AT_WEIGHT = cur.fetchall()[0][0]
 
         # 프로젝트가 끝남 , 감소 목표
-        if today >= end_time and goal_type == 'Diet':
+        if today >= end_time and goal_type == 'diet':
             if goal_weight >= AT_WEIGHT:
                 update_query = f"""
                     UPDATE pha_project SET is_achieved = True 
@@ -961,27 +961,27 @@ class my_Streamlit:
                             """
             cur.execute(goal_type_q)
             goal_type = cur.fetchall()[0][0]
-            if goal_type == "Diet":
+            if goal_type == "diet":
+                
                 if cur_weight <= goal_weight:
                     # st.write(f"Way to go!! You have lost {change_weight} kg and {left_weight} kg is left for a success!! ")
-                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Way to go!!</span> You have gained <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> and <span style='font-size: 20px; font-weight: bold; color: orange;'>{left_weight} kg</span> is left for a success <span style='font-size: 20px;'>🏋️‍♂️🏋️</span>", unsafe_allow_html=True)
+                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Good job!!</span> You have lost <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> and <span style='font-size: 20px; font-weight: bold; color: orange;'>{left_weight} kg</span> is left for a success <span style='font-size: 20px;'>🏋️‍♂️🏋️</span>", unsafe_allow_html=True)
 
                 else:
                     # st.write(f"Work hard!! You have gained {change_weight} kg!! ")
                     st.write(f"<span style='font-size: 18px; font-weight: bold;'>Work hard!!</span> You have gained <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> <span style='font-size: 20px;'>🏋️‍♂️</span>", unsafe_allow_html=True)
 
             else: # goal_type = "putting on weight"
+                
                 if cur_weight >= goal_weight:
                     left_weight = -left_weight
                     # st.wirte(f"Way to go!! You have gained {change_weight} kg and {left_weight} kg is left for a success")
-                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Way to go!!</span> You have gained <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> and <span style='font-size: 20px; font-weight: bold; color: orange;'>{left_weight} kg</span> is left for a success <span style='font-size: 20px;'>🏋️‍♂️🏋️</span>", unsafe_allow_html=True)
+                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Good job!!</span> You have gained <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> and <span style='font-size: 20px; font-weight: bold; color: orange;'>{left_weight} kg</span> is left for a success <span style='font-size: 20px;'>🏋️‍♂️🏋️</span>", unsafe_allow_html=True)
 
                 else:
                     change_weight = -change_weight
                     # st.write(f"Work hard!! You have lost {-change_weight} kg ")
-                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Work hard!!</span> You have lost <span style='font-size: 20px; font-weight: bold; color: orange;'>{-change_weight} kg</span> <span style='font-size: 20px;'>🏋️‍♂️</span>", unsafe_allow_html=True)
-
-
+                    st.write(f"<span style='font-size: 18px; font-weight: bold;'>Work hard!!</span> You have lost <span style='font-size: 20px; font-weight: bold; color: orange;'>{change_weight} kg</span> <span style='font-size: 20px;'>🏋️‍♂️</span>", unsafe_allow_html=True)
 
 
             

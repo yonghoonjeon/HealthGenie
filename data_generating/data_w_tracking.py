@@ -42,7 +42,7 @@ def generate_dates(start_date):
     current_date = start_date
 
     # Generate dates for one year
-    for _ in range(365 + 30*4 + 25):
+    for _ in range(365 + 30*6):
         #cur_time = current_date.strftime('%Y-%m-%d %H:%M:%S')
         
         rhour = random.randrange(7, 24)    
@@ -78,7 +78,7 @@ for each_idx, each in enumerate(data):
 
 set_duration_of_project = list(range(5))
 ############################################################# generating data 
-track_id = 1
+track_id = 10
 query_list = []
 for user_id, joined_time, min_w, max_w, cur_weight in zip(list_user_id, list_joined_time, list_min_w, list_max_w, list_current_weight):
 

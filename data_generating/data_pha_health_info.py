@@ -53,7 +53,7 @@ for data in users_result:
     list_user_id.append(data[1])
 
 
-health_info = 1
+health_info = 10
 query_list= []
 for project_id, user_id in zip(list_project_id, list_user_id):
     #allergy_name 

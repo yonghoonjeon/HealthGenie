@@ -33,7 +33,7 @@ def generate_dates(start_date):
     current_date = start_date
 
     # Generate dates for one year
-    for _ in range(365 + 30*4 + 25):
+    for _ in range(365 + 30*6):
         if isinstance(current_date, str):  # Check if current_date is a string
             cur_time = datetime.datetime.strptime(current_date[0:19], '%Y-%m-%d %H:%M:%S')
         else:
@@ -109,7 +109,7 @@ len_food = len(list_food_id)
 ##########################################
 
 query_list = []
-meal_id = 1
+meal_id = 10
 for user_id, joined_time in zip(list_user_id, list_joined_time):
     start = str(joined_time)
     list_dates = generate_dates(start)

@@ -107,12 +107,12 @@ for row in data:
 
 
 # project duration in month 
-set_duration = [1, 3, 4, 5, 6]
+set_duration = [1, 3, 5, 6, 7]
 
 query_list = []
 
 ##################parameters #########################################
-project_id = 1
+project_id = 10
 
 # 5 projects per each person 
 for idx, user_id in enumerate(list_user_id):

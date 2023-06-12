@@ -24,6 +24,7 @@ cur = conn.cursor()
 #conn.commit()
 
 list_user_name = ['JaneKim', 'DayeLee', 'TeasupKim', 'JaejinLee', 'SeraLee', 'SojungYeon','YeonJung', 'SeungunLee', 'KyuBChoi','ByungChanKim', 'JaePill', 'DongKwan']
+
 # password = Jane902
 password = "pbkdf2_sha256$260000$wAXbpU2jDq24g8V7HWkSxi$AwsjU0JX0Pa15iwyBaz9Q9293N/3e/O/1LLmpDOzjsQ="
 
@@ -46,7 +47,7 @@ list_sex = ['female','male']
 
 
 query_list = []
-user_id = 2
+user_id = 10
 for user_name, email in zip(list_user_name, list_email):
     #sex 
     sex_idx = random.randint(0, 1)
