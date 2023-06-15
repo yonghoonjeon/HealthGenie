@@ -23,7 +23,7 @@ cur = conn.cursor()
 # Commit the changes
 #conn.commit()
 
-list_user_name = ['JaneKim', 'DayeLee', 'TeasupKim', 'JaejinLee', 'SeraLee', 'SojungYeon','YeonJung', 'SeungunLee', 'KyuBChoi','ByungChanKim', 'JaePill', 'DongKwan']
+list_user_name = ['JaneKim', 'DayeLee', 'TeasupKim', 'JaejinLee', 'SeraLee', 'SojungYeon','YeonJung', 'SeungunLee', 'KyuBChoi','ByungChanKim', 'JaePill', 'DongKwan', 'Jonghwan', 'JaeMyung','Hyori']
 # password = Jane902
 password = "pbkdf2_sha256$260000$wAXbpU2jDq24g8V7HWkSxi$AwsjU0JX0Pa15iwyBaz9Q9293N/3e/O/1LLmpDOzjsQ="
 
