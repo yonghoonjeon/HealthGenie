@@ -2,6 +2,13 @@ import datetime
 import random 
 import my_db_setting
 
+
+# delete from pha_healthinfo;
+# delete from pha_meal;
+# delete from pha_project;
+# delete from pha_tracking;
+# delete from pha_user;
+
 # Connect to the PostgreSQL database
 conn = my_db_setting.my_db_setting()
 cur = conn.cursor()
@@ -23,14 +30,40 @@ cur = conn.cursor()
 # Commit the changes
 #conn.commit()
 
-list_user_name = ['JaneKim', 'DayeLee', 'TeasupKim', 'JaejinLee', 'SeraLee', 'SojungYeon','YeonJung', 'SeungunLee', 'KyuBChoi','ByungChanKim', 'JaePill', 'DongKwan', 'Jonghwan', 'JaeMyung','Hyori']
+# 40 people 
+list_user_name = [
+    'JaneKim', 'DayeLee', 'TeasupKim', 'JaejinLee', 'SeraLee', 'SojungYeon','YeonJung', 'SeungunLee', 'KyuBChoi',
+    'ByungChanKim', 'JaePill', 'DongKwan', 'Jonghwan', 'JaeMyung','HyoriLee', 'JugiHong','YoonjinNa', 'DonghwaKim',
+    'KisungNam','OhjungSea', 'NamGilKim','AraChoi','Micheal','Scalet Johanson','Whiteny huston','Naive',
+    'SangdongLee','KimNamKil' ,'Rain','Sunny','Soyeon Kim','Sangyook Lee','OhJunghWAN','hYUNGYONG','soonja',
+    'Honaldo','kanadara','ohmakase','SommonNam','TaeHeeKim','Bonggil Lee','BongCham','Boodam','ComGuDAK',
+    'SangsilNa', 'Olando', 'Baboo Lilm','Unaki','Solando' ,'Kibong Oh',
+    'John', 'Mary', 'Michael', 'Jennifer', 'Sarah','Jessica', 'James', 'Emily', 'Robert', 'Emma', 'Joseph',
+    'Elizabeth', 'Daniel', 'Lauren', 'Thomas','Ashley', 'Matthew', 'Olivia', 'Christopher', 'Hannah', 'Andrew',
+    'Sophia', 'Grace', 'Nicholas', 'Ava', 'Ryan', 'Abigail', 'Jacob', 'Victoria', 'Brandon', 'Natalie', 'Jonathan',
+    'Alexis', 'Samuel', 'Lily', 'Tyler', 'Chloe', 'Madison', 'Zachary', 'Alyssa', 'Nathan','Ella','Austin','Mia',
+    'Ethan','Samantha','Christian','Haley','William', 'Anna', 'Alexander', 'Megan', 'Kayla', 'Dylan', 'Rachel',
+    'Gabriel', 'Kaitlyn', 'Benjamin', 'Mackenzie', 'Joshua', 'Brooke', 'Elijah', 'Julia', 'Sydney', 'Jasmine',
+    'Luke', 'Katherine', 'Isaac', 'Destiny', 'Jason', 'Alexandra', 'Caleb', 'Nicole', 'Paige', 'Jack', 'Maria',
+    'Logan', 'Sara', 'Juan', 'Sophie', 'Kevin', 'Morgan', 'Isaiah', 'David', 'Katelyn', 'Allison', 'Aaron', 'Nevaeh',
+    'Henry', 'Gabrielle', 'Owen', 'Jordan', 'Wyatt', 'Caroline', 'Cameron', 'Sierra', 'Liam', 'Ariana', 'Connor',
+    'Audrey', 'Jayden', 'Maya', 'Noah', 'Claire', 'Evan', 'Autumn', 'Sebastian', 'Aiden', 'Brooklyn', 'Julian',
+    'Jocelyn', 'Mason', 'Kimberly', 'Trevor', 'Vanessa', 'Alex', 'Melissa', 'Ian', 'Gabriella', 'Blake', 'Amelia',
+    'Nathaniel', 'Trinity', 'Carson', 'Faith', 'Angel', 'Kylie', 'Riley', "Lillian", "Micah", "Leah", "Colton", "Savannah",
+    "Jordan", "Maya", "Dominic", "Jade", "Xavier", "Rebecca", "Jaden", "Evelyn", "Parker", "Madeline", "Adam", "Grace","Jose"
+]
+
 # password = Jane902
 password = "pbkdf2_sha256$260000$wAXbpU2jDq24g8V7HWkSxi$AwsjU0JX0Pa15iwyBaz9Q9293N/3e/O/1LLmpDOzjsQ="
+
+random_number = random.randint(1, 1000)
+mail_list = ['gmail.com', 'snu.ac.kr', 'naver.com' , 'nate.com']
 
 list_email = []
 email = ""
 for user_name in list_user_name:
-    email = user_name + "902@snu.ac.kr"
+    mail_idx = random.randint(0, len(mail_list)-1)
+    email = user_name + str(random_number) + "@" + mail_list[mail_idx]
     list_email.append(email)
 
 last_login = datetime.datetime.now()

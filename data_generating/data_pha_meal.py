@@ -141,12 +141,12 @@ for user_id, joined_time in zip(list_user_id, list_joined_time):
 
                 # 0 = didn't rate 
                 if 1 <= food_list.index(food_name) < len_food/5:
-                    rating_list = [0, 4, 5]
-                    rating_idx = random.randrange(0, 3)
+                    rating_list = [4, 5]
+                    rating_idx = random.randrange(0, 2)
                     rating = rating_list[rating_idx]
                 elif len_food/5 <= food_list.index(food_name) < len_food*2/5:
-                    rating_list = [0, 3, 4]
-                    rating_idx = random.randrange(0, 3)
+                    rating_list = [3, 4]
+                    rating_idx = random.randrange(0, 2)
                     rating = rating_list[rating_idx] 
                 elif len_food*2/5 <= food_list.index(food_name) < len_food * 4/5:
                     rating_list = [0, 2, 3]
