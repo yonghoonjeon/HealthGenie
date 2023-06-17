@@ -131,9 +131,17 @@ A password for all users is Jane902
 ```shell
    sudo service nginx restart
 ```
-5. replace <your-ipaddress> in pha/project_detail.html
+5. replace <your-ipaddress> in pha/project_detail.html and settings.py
 ```html
-   <iframe src="http://<your-ipaddress>:8501" width="100%" height="850" style="border: none;"></iframe>
+    <!--pha/project_detail.html -->
+    <iframe src="http://<your-ipaddress>:8501" width="100%" height="850" style="border: none;"></iframe>
+```
+```python
+   # settings.py
+   CORS_ORIGIN_WHITELIST = (
+    ...
+    'http://<your-ipaddress>:8501',
+)
 ```
 6. run the django server
 ```shell
