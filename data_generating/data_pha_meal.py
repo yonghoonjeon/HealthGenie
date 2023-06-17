@@ -1,9 +1,7 @@
-import psycopg2 
 import content_based_food_rec
 import datetime 
 import random 
 import pandas as pd 
-import csv 
 import my_db_setting
 
 '''
@@ -33,7 +31,7 @@ def generate_dates(start_date):
     current_date = start_date
 
     # Generate dates for one year
-    for _ in range(365 + 30*4 + 25):
+    for _ in range(365 + 7*30):
         if isinstance(current_date, str):  # Check if current_date is a string
             cur_time = datetime.datetime.strptime(current_date[0:19], '%Y-%m-%d %H:%M:%S')
         else:
@@ -143,12 +141,12 @@ for user_id, joined_time in zip(list_user_id, list_joined_time):
 
                 # 0 = didn't rate 
                 if 1 <= food_list.index(food_name) < len_food/5:
-                    rating_list = [0, 4, 5]
-                    rating_idx = random.randrange(0, 3)
+                    rating_list = [4, 5]
+                    rating_idx = random.randrange(0, 2)
                     rating = rating_list[rating_idx]
                 elif len_food/5 <= food_list.index(food_name) < len_food*2/5:
-                    rating_list = [0, 3, 4]
-                    rating_idx = random.randrange(0, 3)
+                    rating_list = [3, 4]
+                    rating_idx = random.randrange(0, 2)
                     rating = rating_list[rating_idx] 
                 elif len_food*2/5 <= food_list.index(food_name) < len_food * 4/5:
                     rating_list = [0, 2, 3]
