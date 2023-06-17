@@ -1118,9 +1118,9 @@ with st.sidebar:
                         icons=['chat-right-text', 'clipboard-data', 'speedometer', 'droplet-half', 'hand-thumbs-up'],
                         menu_icon="person-vcard", default_index=0,
                         styles={
-        "container": {"padding": "5!important", "background-color": "#fafafa"},
+        "container": {"padding": "5!important"},
         "icon": {"color": "#FA4C4B", "font-size": "25px"}, 
-        "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#eee"},
+        "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "#eeeeee", "color": "#1D80C3"},
         "nav-link-selected": {"background-color": "#BED2F3"},
     }
     )

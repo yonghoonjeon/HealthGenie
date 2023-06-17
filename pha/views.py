@@ -138,8 +138,7 @@ def analyze(request):
         shutil.copyfile(image_path, media_path)
 
         # 이 부분에 Flask 애플리케이션의 호스트 및 포트를 입력하세요.
-        flask_url = 'http://91fd-183-101-218-37.ngrok-free.app/analyze'
-
+        flask_url = 'https://e498-183-101-218-37.ngrok-free.app/analyze'
         with open(image_path, 'rb') as img:
             response = requests.post(flask_url, files={'file': img})
         os.remove(image_path)  # 임시 파일 삭제
@@ -297,7 +296,7 @@ def project_list(request):
         shutil.copyfile(image_path, media_path)
 
         #flask_url = 'http://37ce-34-170-252-194.ngrok-free.app/analyze'
-        flask_url = 'http://91fd-183-101-218-37.ngrok-free.app/analyze'
+        flask_url = 'https://e498-183-101-218-37.ngrok-free.app/analyze'
         with open(image_path, 'rb') as img:
             response = requests.post(flask_url, files={'file': img})
 
@@ -402,12 +401,12 @@ class ProjectCreateView(LoginRequiredMixin, TemplateView):
 
 
 def project_detail(request, project_id):
-    global process
-    for tmp in process:
-        tmp.terminate()
-        process.remove(tmp)
+    # global process
+    # for tmp in process:
+    #     tmp.terminate()
+    #     process.remove(tmp)
     project = Project.objects.get(pk=project_id)
-    streamlit_app_dir = 'C:/Users/yjhwang/HealthGenie/pha/final_streamlit'
+    streamlit_app_dir = '/Users/yonghoonjeon/Documents/PycharmProjects/HealthGenie/pha/final_streamlit'
     #subprocess.Popen(['streamlit', 'run', './final_streamlit.py', '--', '--user_id', '4', '--project_id', '12', '--server.headless', 'true'], cwd=streamlit_app_dir)
     #user_id = request.user
 
@@ -430,7 +429,7 @@ def project_detail(request, project_id):
         '--browser.serverAddress',
         '0.0.0.0',
         '--server.port',
-        '8581',
+        '8501',
         '--server.headless',
         'true',
         '--',

@@ -50,16 +50,16 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # CORS
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     #"django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     #"django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # CORS
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware"
+    "django.middleware.clickjacking.XFrameOptionsMiddleware"
 ]
 
 ROOT_URLCONF = "HealthGenie.urls"
@@ -139,7 +139,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CORS_ORIGIN_WHITELIST: 다음의 포트로 오는 request는 허락해 준다는 뜻임.
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8081',
+    'http://localhost:8501',
+    'http://0.0.0.0:8501',
+    'http://<your-ipaddress>:8501',
 )
 CORS_ALLOWED_ORIGINS = [
     'http://0.0.0.0:8501',  # Replace with the URL of your Streamlit app

@@ -75,7 +75,6 @@
     {% endif %}
 
     {% if result %}
-        <h2>Result</h2>
         {% if result.csv_name1 %}
             <h2>🍽️ Insert Meal</h2>
             <form id="mealForm-{{ forloop.counter }}" class="mealForm" method="post" enctype="multipart/form-data">
@@ -88,6 +87,18 @@
                             <input type="text" name="meal_type[]" placeholder="Meal type">
                             <input type="number" name="serving_size[]" placeholder="Serving size">
                             <input type="number" name="rating[]" placeholder="Rating">
+{#                        <input type="hidden" name="f_name[]" value="{{ item.names|lower }}">#}
+{#                        <div class="mb-3">#}
+{#                            <label for="{{ meal_form.meal_type.id_for_label }}" class="form-label">{{ meal_form.meal_type.label }}:</label>#}
+{#                            {{ meal_form.meal_type }}#}
+{#                        </div>#}
+{#                        <div class="mb-3">#}
+{#                            <label for="{{ meal_form.serving_size.id_for_label }}" class="form-label">{{ meal_form.serving_size.label }}:</label>#}
+{#                            {{ meal_form.serving_size }}#}
+{#                        </div>#}
+{#                        <div class="mb-3">#}
+{#                            <label for="{{ meal_form.rating.id_for_label }}" class="form-label">{{ meal_form.rating.label }}:</label>#}
+{#                            {{ meal_form.rating }}#}
                         </div>
                     </div>
                 {% endfor %}
@@ -96,7 +107,7 @@
         {% endif %}
             {% endif %}
 </section>
-
+{% if not result %}
 <section>
     <h2 class="mt-4">🍽️ Insert Meal</h2>
     <form id="mealForm" method="post" enctype="multipart/form-data">
@@ -120,7 +131,7 @@
         <button type="submit" id="insertButton" class="btn btn-primary">Insert</button>
     </form>
 </section>
-
+{% endif %}
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

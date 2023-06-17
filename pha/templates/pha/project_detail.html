@@ -20,10 +20,43 @@
         <a href="{% url 'project_list' %}" class="btn btn-primary">Return to project list</a>
         <br>
         <br>
-        <div style="width:100%;height:800px;overflow:hidden;">
-            <iframe src="http://<your-ipaddress>0:8581" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
+        <div id="projectContent" style="width:100%;height:800px;overflow:hidden;">
+            <iframe src="http://<your-ipaddress>:8501" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var reloadCount = 0;
+
+            // Reload the page content using Ajax twice on the first load
+            $.ajax({
+                url: window.location.href,
+                type: 'GET',
+                success: function(response) {
+                    var updatedContent = $(response).find('#projectContent').html();
+                    $('#projectContent').html(updatedContent);
+
+                    reloadCount++;
+
+                    if (reloadCount < 2) {
+                        // Perform the second reload after a delay of few seconds
+                        setTimeout(function() {
+                            $.ajax({
+                                url: window.location.href,
+                                type: 'GET',
+                                success: function(response) {
+                                    var updatedContent = $(response).find('#projectContent').html();
+                                    $('#projectContent').html(updatedContent);
+                                }
+                            });
+                        }, 800); // 0.8 seconds
+                    }
+                }
+            });
+        });
+    </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
